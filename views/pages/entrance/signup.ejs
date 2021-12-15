@@ -4,7 +4,7 @@
         <div style="max-width: 450px;" class="mx-auto">
             <p class="text-center">Let's get started! Becoming a member is free and only takes a few minutes.</p>
             <hr/>
-            <ajax-form action="signup" :syncing.sync="syncing" :cloud-error.sync="cloudError"
+            <ajax-form ref="form" action="signup" :syncing.sync="syncing" :cloud-error.sync="cloudError"
                        :form-errors.sync="formErrors" :form-data="formData" :form-rules="formRules"
                        @submitted="submittedForm()">
                 <div class="form-group">
@@ -22,22 +22,30 @@
                     <div class="invalid-feedback" v-if="formErrors.emailAddress">Please enter a valid email address.
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="password">Choose a password</label>
-                    <input class="form-control" id="password" type="password"
-                           :class="[formErrors.password ? 'is-invalid' : '']" v-model.trim="formData.password"
-                           placeholder="••••••••" autocomplete="new-password">
-                    <div class="invalid-feedback" v-if="formErrors.password">Please enter a password.</div>
+
+                <div class="position-relative">
+                    <input-password
+                            :input-name="'password'"
+                            :form-errors="formErrors"
+                            :form-data="formData"
+                            :focus-first="false"
+                            :label="'Choose a password'"
+                            :error-message="'Please enter a VALID password.'"
+                            @change="formValidate()"></input-password>
+                    <password-check-panel :form-data="formData" :form-errors="formErrors"/>
                 </div>
-                <div class="form-group">
-                    <label for="confirm-password">Confirm password</label>
-                    <input class="form-control" id="confirm-password" type="password"
-                           :class="[formErrors.confirmPassword ? 'is-invalid' : '']"
-                           v-model.trim="formData.confirmPassword" placeholder="••••••••" autocomplete="new-password">
-                    <div class="invalid-feedback" v-if="formErrors.confirmPassword">Your password and confirmation do
-                        not match.
-                    </div>
+
+                <div class="position-relative">
+                    <input-password
+                            :input-name="'confirmPassword'"
+                            :form-errors="formErrors"
+                            :form-data="formData"
+                            :focus-first="false"
+                            :label="'Confirm password'"
+                            :error-message="'Your new password and confirmation do not match.'"
+                            @change="formValidate()"></input-password>
                 </div>
+
                 <div class="form-group form-check">
                     <input class="form-check-input" id="terms-agreement" type="checkbox" v-model="formData.agreed">
                     <label for="terms-agreement" class="form-check-label"
@@ -56,13 +64,13 @@
 
                     <ajax-button @click="signinWithGoogle" type="button" :syncing="syncing"
                                  class="btn-secondary btn-lg btn-block">
-                        <i class="fa fa-facebook"></i>
+                        <i class="fa fa-google"></i>
                         Signup with Google
                     </ajax-button>
 
                     <ajax-button @click="signinWithFacebook" type="button" :syncing="syncing"
                                  class="btn-secondary btn-lg btn-block">
-                        <i class="fa fa-google"></i>
+                        <i class="fa fa-facebook"></i>
                         Signup with Facebook
                     </ajax-button>
                 </div>

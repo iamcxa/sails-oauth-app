@@ -7,7 +7,7 @@ const verifyHandler = function (req, token, tokenSecret, profile, done) {
     // profile,
     accessToken: token,
     refreshToken: tokenSecret,
-    provider: 'google',
+    provider: profile.provider || 'google',
 
     email:  profile.emails[0].value,
     password: ' ', //`${Date.now()}${Math.random().toString(36).substr(2, 5)}}`,

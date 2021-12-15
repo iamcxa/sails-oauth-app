@@ -14,7 +14,14 @@ parasails.registerPage('signup', {
     formRules: {
       fullName: {required: true},
       emailAddress: {required: true, isEmail: true},
-      password: {required: true},
+      password: {
+        required: true,
+        minLength: 8,
+        'minLowerString': 1,
+        'minUpperString': 1,
+        'minDigit': 1,
+        'minSpecialString': 1,
+      },
       confirmPassword: {required: true, sameAs: 'password'},
       agreed: {required: true},
     },
@@ -44,14 +51,17 @@ parasails.registerPage('signup', {
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
 
-    signinWithFacebook: function() {
-      // alert('fcaebook')
+    formValidate() {
+      if (this.$refs.form) {
+        this.formErrors = this.$refs.form.validate(this.formData, {});
+      }
+    },
 
+    signinWithFacebook: function() {
       window.location = '/api/v1/auth/facebook';
     },
 
     signinWithGoogle: function() {
-      // alert('google')
       window.location = '/api/v1/auth/google';
     },
 
@@ -62,7 +72,7 @@ parasails.registerPage('signup', {
       }
       else {
         // Otherwise, redirect to the logged-in dashboard.
-        // > (Note that we re-enable the syncing state here.  This is on purpose--
+        // > (Note that we re-enable the syncing state here.  This is on purpose--
         // > to make sure the spinner stays there until the page navigation finishes.)
         this.syncing = true;
         window.location = '/';

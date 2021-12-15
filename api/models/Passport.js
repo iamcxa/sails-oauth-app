@@ -23,14 +23,14 @@ module.exports = {
       type: 'string',
       required: true,
       unique: false,
-      maxLength: 200,
+      maxLength: 255,
     },
 
     refreshToken: {
       type: 'string',
       required: false,
       unique: false,
-      maxLength: 200,
+      maxLength: 255,
     },
 
     refreshedAt: {

@@ -1,39 +1,40 @@
-'use strict';
-
-var passport = require('passport'),
-  FacebookStrategy = require('passport-facebook').Strategy,
-  request = require('request');
+var passport = require('passport');
+var FacebookStrategy = require('passport-facebook').Strategy;
+var request = require('request');
 const config = require('../local');
 
 
 var verifyHandler = function(req, token, tokenSecret, profile, done) {
 
-  process.nextTick(function() {
+  console.log('profile=>', profile);
+
+  process.nextTick(() => {
     var url = 'https://graph.facebook.com/v2.10/me?access_token=%s&fields=id,email,first_name,last_name';
     url = url.replace('%s', token);
 
     var options = {method: 'GET', url: url, json: true};
-    request(options, function (err, response) {
+    request(options, (err, response) => {
       if (err) {
         return done(null, null);
       }
 
-      console.log('response.body=>', response)
+      const data = {
+        // id: response.body.id,
+        // first_name: response.body.first_name,
+        // last_name: response.body.last_name,
+        // email: response.body.email,
+        profile,
 
-      var data = {
-        id: response.body.id,
-        first_name: response.body.first_name,
-        last_name: response.body.last_name,
-        email: response.body.email,
-          ...response.body,
+        accessToken: token,
+        refreshToken: tokenSecret,
+        provider: profile.provider || 'facebook',
+
+        email:  response.body.email,
+        password: '1', //`${Date.now()}${Math.random().toString(36).substr(2, 5)}}`,
+        fullName: profile.displayName,
+        isSuperAdmin: false,
+        emailStatus: 'confirmed',
       };
-
-      // var data = {
-      //   profile,
-      //   token,
-      //   tokenSecret,
-      // };
-
 
       return done(null, data);
     });

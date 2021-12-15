@@ -95,11 +95,7 @@ module.exports = {
           provider: data.provider,
         });
 
-        // console.log('passportRecord=>', passportRecord)
-
         if (!passportRecord) {
-          // console.log('creaet new passportRecord ...')
-
           await Passport.create({
             accessToken: data.accessToken,
             refreshToken: data.refreshToken,

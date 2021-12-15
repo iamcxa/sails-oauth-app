@@ -16,9 +16,10 @@ module.exports = async function (req, res, proceed) {
   // > For more about where `req.me` comes from, check out this app's
   // > custom hook (`api/hooks/custom/index.js`).
   if (req.me) {
-    if (!req.me.password.trim() && !req.me.oauthSkipPassword) {
+    // only redirect oAuthed user to set new password when their request view resource.
+    if (!req.me.password.trim() && !req.me.oauthSkipPassword && !req.url.includes('/api')) {
       sails.log('...logged in user has not set password yet, so redirecting to set up page.');
-      res.redirect('/account/oauth-password');
+      res.redirect('/account/set-password');
     }
     return proceed();
   }
