@@ -18,10 +18,11 @@ module.exports = {
 
   fn: async function () {
 
-    // If billing features are enabled, include our configured Stripe.js
-    // public key in the view locals.  Otherwise, leave it as undefined.
+    const user = await User.findOne({ id: this.req.session.userId }).populate('passports');
+
     return {
-      stripePublishableKey: sails.config.custom.enableBillingFeatures? sails.config.custom.stripePublishableKey : undefined,
+      hasPassword: !!user.password.trim(),
+      passports: (user.passports || []).map(e => e.provider),
     };
 
   }

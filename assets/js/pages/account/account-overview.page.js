@@ -3,14 +3,7 @@ parasails.registerPage('account-overview', {
   //  ║║║║║ ║ ║╠═╣║    ╚═╗ ║ ╠═╣ ║ ║╣
   //  ╩╝╚╝╩ ╩ ╩╩ ╩╩═╝  ╚═╝ ╩ ╩ ╩ ╩ ╚═╝
   data: {
-    isBillingEnabled: false,
-
-    hasBillingCard: false,
-
-    // Syncing/loading states for this page.
-    syncingOpenCheckout: false,
-    syncingUpdateCard: false,
-    syncingRemoveCard: false,
+    RESEND_VERIFY_EMAIL_DELAY: 4000,
 
     // For <ajax-form>
     formData: { /* … */ },
@@ -18,10 +11,6 @@ parasails.registerPage('account-overview', {
     formErrors: { /* … */ },
     cloudError: '',
     syncing: '',
-
-    // For <modal>:
-    modal: '',
-
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -29,16 +18,6 @@ parasails.registerPage('account-overview', {
   //  ╩═╝╩╚  ╚═╝╚═╝ ╩ ╚═╝╩═╝╚═╝
   beforeMount: function (){
     _.extend(this, window.SAILS_LOCALS);
-
-    this.isBillingEnabled = !!this.stripePublishableKey;
-
-    // Determine whether there is billing info for this user.
-    this.me.hasBillingCard = (
-      this.me.billingCardBrand &&
-      this.me.billingCardLast4 &&
-      this.me.billingCardExpMonth &&
-      this.me.billingCardExpYear
-    );
   },
   mounted: async function() {
     //…
@@ -49,57 +28,50 @@ parasails.registerPage('account-overview', {
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
 
-    clickUpdateBillingCardButton: function() {
-      this.modal = 'update-billing-card';
-      this.formData = { newPaymentSource: undefined };
-      this.formRules = { newPaymentSource: {required: true}};
+    resendEmailVerification: async function() {
+      const message = 'Are you sure you want to resend the verification email?' +
+        ' please check spam mail box as well.';
+
+      if (confirm(message)) {
+        this.syncing = true;
+        try {
+          const result = await Cloud.resendVerificationEmail();
+
+          if (result === 'OK') {
+            setTimeout(() => {
+              this.syncing = false;
+            }, this.RESEND_VERIFY_EMAIL_DELAY);
+          }
+        } catch (e) {
+          this.syncing = false;
+          alert(e.responseInfo.body.message);
+
+          if (e.responseInfo.statusCode === 409) {
+            if (confirm('Will you like to refresh current page?')) {
+              window.location.reload();
+            }
+          }
+          console.error(JSON.stringify(e));
+        }
+      }
     },
 
-    closeModal: async function() {
-      // Dismiss modal
-      this.modal = '';
-      await this._resetForms();
-    },
+    removeAccount: async function() {
+      const message = 'ARE YOU SURE TO REMOVE THE ACCOUNT? ' +
+        'you will lose all of you`re data, you can register a new account by the same email later.';
 
-    handleSubmittingUpdateBillingCard: async function(argins) {
-      var newPaymentSource = argins.newPaymentSource;
-      await Cloud.updateBillingCard.with(newPaymentSource);
-    },
+      if (confirm(message)) {
+        try {
+          const result = await Cloud.deleteAccount();
 
-    submittedUpdateBillingCard: async function() {
-      Object.assign(this.me, _.pick(this.formData.newPaymentSource, ['billingCardLast4', 'billingCardBrand', 'billingCardExpMonth', 'billingCardExpYear']));
-      this.me.hasBillingCard = true;
-
-      // Dismiss modal
-      this.modal = '';
-      await this._resetForms();
-    },
-
-    _resetForms: async function() {
-      this.cloudError = '';
-      this.formData = {};
-      this.formRules = {};
-      this.formErrors = {};
-      await this.forceRender();
-    },
-
-    clickRemoveCardButton: async function() {
-      this.modal = 'remove-billing-card';
-      this.formData.stripeToken = '';
-    },
-
-    submittedRemoveCardForm: async function() {
-
-      // Update billing info on success.
-      this.me.billingCardLast4 = undefined;
-      this.me.billingCardBrand = undefined;
-      this.me.billingCardExpMonth = undefined;
-      this.me.billingCardExpYear = undefined;
-      this.me.hasBillingCard = false;
-
-      // Close the modal and clear it out.
-      this.closeModal();
-
+          if (result === 'OK') {
+            window.location = '/login';
+          }
+        } catch (e) {
+          alert(e.message);
+          console.error(e);
+        }
+      }
     },
 
   }

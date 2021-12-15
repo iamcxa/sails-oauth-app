@@ -119,38 +119,13 @@ module.exports = {
     await User.updateOne({id: this.req.me.id })
     .set(valuesToSet);
 
-    // If this is an immediate change, and billing features are enabled,
-    // then also update the billing email for this user's linked customer entry
-    // in the Stripe API to make sure they receive email receipts.
-    // > Note: If there was not already a Stripe customer entry for this user,
-    // > then one will be set up implicitly, so we'll need to persist it to our
-    // > database.  (This could happen if Stripe credentials were not configured
-    // > at the time this user was originally created.)
-    if(desiredEmailEffect === 'change-immediately' && sails.config.custom.enableBillingFeatures) {
-      let didNotAlreadyHaveCustomerId = (! this.req.me.stripeCustomerId);
-      let stripeCustomerId = await sails.helpers.stripe.saveBillingInfo.with({
-        stripeCustomerId: this.req.me.stripeCustomerId,
-        emailAddress: newEmailAddress
-      }).timeout(5000).retry();
-      if (didNotAlreadyHaveCustomerId){
-        await User.updateOne({ id: this.req.me.id })
-        .set({
-          stripeCustomerId
-        });
-      }
-    }
-
     // If an email address change was requested, and re-confirmation is required,
     // send the "confirm account" email.
     if (desiredEmailEffect === 'begin-change' || desiredEmailEffect === 'modify-pending-change') {
-      await sails.helpers.sendTemplateEmail.with({
-        to: newEmailAddress,
-        subject: 'Your account has been updated',
-        template: 'email-verify-new-email',
-        templateData: {
-          fullName: fullName||this.req.me.fullName,
-          token: valuesToSet.emailProofToken
-        }
+      await sails.services.user.sendChangeAddressVerificationEmail({
+        fullName: fullName || this.req.me.fullName,
+        emailAddress: newEmailAddress,
+        emailProofToken:valuesToSet.emailProofToken,
       });
     }
 
