@@ -28,7 +28,7 @@ module.exports = {
   fn: async function ({ data, ip }) {
     // Build up data for the new user record and save it to the database.
     try {
-      const userRecord = await User.findOne({
+      let userRecord = await User.findOne({
         emailAddress: data.email.toLowerCase(),
       });
 
@@ -39,6 +39,9 @@ module.exports = {
         : sails.log('\t...user is not existing!');
 
       if (userRecord) {
+        // update email confirmation status due to assume OAuth has been verified the email.
+        userRecord = await sails.services.user.changeEmailStatusToConfirmed({ id: userRecord.id });
+
         // if userRecord exists and payload data has prop provider,
         // means an existing user using OAuth to sign in again, so save them as the same user.
         if (data.provider) {
@@ -61,7 +64,10 @@ module.exports = {
               .fetch();
           }
         }
-        return userRecord;
+        return {
+          user: userRecord,
+          provider: data.provider || 'local',
+        };
       }
 
       const newUserRecord = await User.create(_.extend({
@@ -89,22 +95,27 @@ module.exports = {
           provider: data.provider,
         });
 
+        // console.log('passportRecord=>', passportRecord)
+
         if (!passportRecord) {
+          // console.log('creaet new passportRecord ...')
+
           await Passport.create({
-            provider: data.provider,
             accessToken: data.accessToken,
             refreshToken: data.refreshToken,
             refreshedAt: Date.now(),
+            provider: data.provider,
             userId: newUserRecord.id,
           })
-            .intercept({name: 'UsageError'}, 'invalid')
             .fetch();
 
-          sails.log(`\t...OAuth passport ${data.provider} created successfully.`);
+          sails.log(`\t...OAuth passport "${data.provider}" created successfully.`);
         }
       }
-
-      return newUserRecord;
+      return {
+        user: newUserRecord,
+        provider: data.provider || 'local',
+      };
     } catch (e) {
       sails.log.error(e);
 
