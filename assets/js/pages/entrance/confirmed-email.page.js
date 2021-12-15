@@ -4,6 +4,7 @@ parasails.registerPage('confirmed-email', {
   //  ╩╝╚╝╩ ╩ ╩╩ ╩╩═╝  ╚═╝ ╩ ╩ ╩ ╩ ╚═╝
   data: {
     //…
+    countDown: 10,
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
@@ -14,6 +15,15 @@ parasails.registerPage('confirmed-email', {
   },
   mounted: async function(){
     //…
+    setTimeout(() => {
+      window.location = '/account';
+    }, 10 * 1000);
+
+    setInterval(() => {
+      if (this.countDown > 0) {
+        this.countDown = this.countDown -1;
+      }
+    }, 1000);
   },
 
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗

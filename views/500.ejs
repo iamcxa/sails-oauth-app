@@ -3,6 +3,13 @@
     <h1 class="display-1 mb-3">Oh my.</h1>
     <hr/>
     <h2>We've encountered an unexpected error.</h2>
+    <% if (typeof message === 'string') { %>
+    <div class="p-3 mb-2 bg-info text-white">
+        <p class="font-weight-light">
+            <%= message %>
+        </p>
+    </div>
+    <% } %>
     <div>
       <p>Need help with your account? Please <a href="/contact">let us know</a>.</p>
       <a class="btn btn-lg btn-outline-dark" href="/contact">Open a help request</a>
