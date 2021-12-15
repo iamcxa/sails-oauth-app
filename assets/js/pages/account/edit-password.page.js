@@ -15,7 +15,14 @@ parasails.registerPage('edit-password', {
 
     // Form rules
     formRules: {
-      password: {required: true},
+      password: {
+        required: true,
+        minLength: 8,
+        'minLowerString': 1,
+        'minUpperString': 1,
+        'minDigit': 1,
+        'minSpecialString': 1,
+      },
       confirmPassword: {required: true, sameAs: 'password'},
     },
 
@@ -38,9 +45,15 @@ parasails.registerPage('edit-password', {
   //  ╩╝╚╝ ╩ ╚═╝╩╚═╩ ╩╚═╝ ╩ ╩╚═╝╝╚╝╚═╝
   methods: {
 
+    formValidate() {
+      if (this.$refs.form) {
+        this.formErrors = this.$refs.form.validate(this.formData, {});
+      }
+    },
+
     submittedForm: async function() {
       // Redirect to a different web page on success.
-      // > (Note that we re-enable the syncing state here.  This is on purpose--
+      // > (Note that we re-enable the syncing state here.  This is on purpose--
       // > to make sure the spinner stays there until the page navigation finishes.)
       this.syncing = true;
       window.location = '/account';

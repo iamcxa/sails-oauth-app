@@ -1,11 +1,11 @@
 /**
- * <ajax-button>
+ * <input-password>
  * -----------------------------------------------------------------------------
- * A button with a built-in loading spinner.
+ * A input component specific used for password
  *
  * @type {Component}
  *
- * @event click   [emitted when clicked]
+ * @event change   [emitted when text change]
  * -----------------------------------------------------------------------------
  */
 
@@ -29,6 +29,7 @@ parasails.registerComponent('inputPassword', {
     return {
       //…\
       passwordInputType: 'password',
+      noErrors: false,
     };
   },
 
@@ -38,7 +39,7 @@ parasails.registerComponent('inputPassword', {
   template: `
   <div class="form-group">
     <label :for="inputName">{{ label || 'New password' }}</label>
-
+      <i class="fa fa-check text-success" aria-hidden="true" v-if="noErrors"></i>
       <input class="form-control"
              :id="inputName"
              :name="inputName"
@@ -72,15 +73,28 @@ parasails.registerComponent('inputPassword', {
     },
 
     hasTypedInPassword() {
-      return this.formErrors.password && !this.formErrors.password.includes('required');
+      return this.formErrors[this.inputName] && !this.formErrors[this.inputName].includes('required');
     },
 
     showErrorMessage() {
-      console.log('this.formErrors=>', this.formErrors)
-      console.log('this.inputName=>', this.inputName)
-      console.log('this.formErrors[this.inputName]=>', !!this.formErrors[this.inputName])
-      return this.formErrors[this.inputName];
+      return !!this.formErrors[this.inputName];
     },
+
+  },
+
+  watch: {
+
+    formErrors: {
+      deep: true,
+      handler(val, oldVal) {
+        const isValueChange = !val[this.inputName] !== oldVal[this.inputName];
+        const noErrors = !val[this.inputName] && !!this.formData[this.inputName];
+
+        if (isValueChange) {
+          this.noErrors = noErrors;
+        }
+      },
+    }
 
   },
 

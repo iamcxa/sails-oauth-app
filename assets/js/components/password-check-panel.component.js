@@ -14,6 +14,7 @@ parasails.registerComponent('passwordCheckPanel', {
   //  ╠═╝╠╦╝║ ║╠═╝╚═╗
   //  ╩  ╩╚═╚═╝╩  ╚═╝
   props: [
+    'passwordFieldName',
     'formErrors',
     'formData',
   ],
@@ -42,7 +43,8 @@ parasails.registerComponent('passwordCheckPanel', {
                           <span class="">At least 8 characters</span></li>
                       <li class="">
                           <i :class="checkMultiRulesPass()" aria-hidden="true"></i>
-                          <span class="">At least 3 of the following:</span>
+                          <span class="">All 4 of the following:</span>
+<!--                          <span class="">At least 3 of the following:</span>-->
                           <div>
                               <ul>
                                 <li class=""
@@ -75,7 +77,8 @@ parasails.registerComponent('passwordCheckPanel', {
   computed: {
 
     hasTypedInPassword() {
-      return this.formErrors.password && !this.formErrors.password.includes('required');
+      const notRequiredErr = this.formErrors.password && !this.formErrors.password.includes('required');
+      return notRequiredErr;
     },
 
   },
@@ -111,7 +114,7 @@ parasails.registerComponent('passwordCheckPanel', {
         this.formErrors.password.includes('minDigit'),
         this.formErrors.password.includes('minSpecialString'),
       ];
-      return errorRules.filter(e => e).length <= 1
+      return errorRules.filter(e => e).length <= 0
         ? 'fa fa-check-circle'
         : 'fa fa-circle-thin';
     },

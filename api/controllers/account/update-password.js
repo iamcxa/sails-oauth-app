@@ -25,9 +25,10 @@ module.exports = {
 
     // Update the record for the logged-in user.
     await User.updateOne({ id: this.req.me.id })
-    .set({
-      password: hashed
-    });
+      .set({
+        password: hashed,
+        oauthSkipPassword: false,
+      });
 
   }
 
