@@ -32,7 +32,7 @@ module.exports.routes = {
   'GET /account':            { action: 'account/view-account-overview' },
   'GET /account/password':   { action: 'account/view-edit-password' },
   'GET /account/profile':    { action: 'account/view-edit-profile' },
-  'GET /account/oauth-password':   { action: 'account/view-set-password' },
+  'GET /account/set-password':   { action: 'account/view-set-password' },
 
 
   //  ╔╦╗╦╔═╗╔═╗  ╦═╗╔═╗╔╦╗╦╦═╗╔═╗╔═╗╔╦╗╔═╗   ┬   ╔╦╗╔═╗╦ ╦╔╗╔╦  ╔═╗╔═╗╔╦╗╔═╗
@@ -54,9 +54,11 @@ module.exports.routes = {
   // Note that, in this app, these API endpoints may be accessed using the `Cloud.*()` methods
   // from the Parasails library, or by using those method names as the `action` in <ajax-form>.
   '/api/v1/account/logout':                           { action: 'account/logout' },
+  'DELETE   /api/v1/account':                         { action: 'account/delete-account' },
   'PUT   /api/v1/account/update-password':            { action: 'account/update-password' },
+  'PUT   /api/v1/account/no-password':            { action: 'account/no-password' },
   'PUT   /api/v1/account/update-profile':             { action: 'account/update-profile' },
-  'PUT   /api/v1/account/update-billing-card':        { action: 'account/update-billing-card' },
+  'POST  /api/v1/account/resend-verification-email': { action: 'account/resend-verification-email' },
   'PUT   /api/v1/entrance/login':                        { action: 'entrance/login' },
   'POST  /api/v1/entrance/signup':                       { action: 'entrance/signup' },
   'POST  /api/v1/entrance/send-password-recovery-email': { action: 'entrance/send-password-recovery-email' },
@@ -68,7 +70,5 @@ module.exports.routes = {
   'GET /api/v1/auth/google/callback':       { action: 'oauth/google-callback' },
   'GET /api/v1/auth/facebook': { action: 'oauth/facebook-auth' },
   'GET /api/v1/auth/facebook/callback': { action: 'oauth/facebook-callback' },
-  // 'GET /api/v1/auth/google':                {controller: 'PassportController', action: 'googleAuth'},
-  // 'GET /api/v1/auth/google/callback':       {controller: 'PassportController', action: 'googleCallback'},
 
 };
