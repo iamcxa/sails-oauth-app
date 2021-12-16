@@ -58,7 +58,7 @@ then redirect to either a special landing page (for newly-signed up users), or t
     }
 
     // Get the user with the matching email token.
-    var user = await User.findOne({ emailProofToken: token });
+    let user = await User.findOne({ emailProofToken: token });
 
     // console.log('user=>', user)
     // If no such user exists, or their token is expired, bail.

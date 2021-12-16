@@ -92,7 +92,7 @@ parasails.registerComponent('ajaxForm', {
     }
 
     if (this.formRules) {
-      var SUPPORTED_RULES = [
+      let SUPPORTED_RULES = [
         'required', 'isEmail', 'isIn', 'is', 'minLength', 'maxLength',
         'sameAs', 'isHalfwayDecentPassword', 'custom',
         'minLowerString',
@@ -310,7 +310,7 @@ parasails.registerComponent('ajaxForm', {
       this.$emit('update:cloudError', '');
 
       // Determine the argins that will be sent to the server in our request.
-      var argins;
+      let argins;
       if (this.handleParsing) {
         // Run the provided "handle-parsing" logic.
         // > This should clear out any pre-existing error messages, perform any additional
@@ -356,9 +356,9 @@ parasails.registerComponent('ajaxForm', {
 
 
       // Submit the form
-      var failedWithCloudExit;
-      var rawErrorFromCloudSDK;
-      var result;
+      let failedWithCloudExit;
+      let rawErrorFromCloudSDK;
+      let result;
       if (this.handleSubmitting) {
         try {
           // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

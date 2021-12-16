@@ -16,22 +16,19 @@
  *       badToken: {
  *         description: 'Provided token was expired, invalid, or already used up.',
  *         responseType: 'expired'
- *       }
+*       }
  *     }
  * ```
  */
 module.exports = function expired() {
-
-  var req = this.req;
-  var res = this.res;
+  let req = this.req;
+  let res = this.res;
 
   sails.log.verbose('Ran custom response: res.expired()');
 
   if (req.wantsJSON) {
     return res.status(498).send('Token Expired/Invalid');
-  }
-  else {
+  } else {
     return res.status(498).view('498');
   }
-
 };

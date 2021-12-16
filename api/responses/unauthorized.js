@@ -22,8 +22,8 @@
  */
 module.exports = function unauthorized() {
 
-  var req = this.req;
-  var res = this.res;
+  let req = this.req;
+  let res = this.res;
 
   sails.log.verbose('Ran custom response: res.unauthorized()');
 

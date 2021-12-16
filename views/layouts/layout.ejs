@@ -53,7 +53,7 @@
         <div class="navbar-nav flex-row">
             <!-- LOGGED-IN NAVIGATION -->
             <% if(me) { %>
-                <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/contact">Help</a>
+<!--                <a class="nav-item nav-link ml-2 ml-md-0 mr-2 mr-md-0" href="/contact">Help</a>-->
                 <!-- Only in desktop nav -->
                 <div class="nav-item dropdown d-none d-sm-block">
                     <a class="nav-link dropdown-toggle" id="header-account-menu-link" data-toggle="dropdown"
@@ -68,7 +68,7 @@
                 <a class="nav-item nav-link ml-2 mr-2 d-block d-sm-none" href="/logout">Sign out</a>
             <% } else { %>
                 <!-- LOGGED-OUT NAVIGATION -->
-                <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/faq">FAQ</a>
+<!--                <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/faq">FAQ</a>-->
                 <a class="nav-item nav-link ml-2 ml-md-0 mr-2" href="/login">Log in</a>
                 <!-- Only in desktop nav -->
                 <div class="form-inline d-none ml-2 d-md-block">
@@ -458,9 +458,8 @@
 <script src="/js/components/input-password.component.js"></script>
 <script src="/js/components/js-timestamp.component.js"></script>
 <script src="/js/components/modal.component.js"></script>
+<script src="/js/components/oauth-button.component.js"></script>
 <script src="/js/components/password-check-panel.component.js"></script>
-<script src="/js/components/stripe-card-element.component.js"></script>
-<script src="/js/utilities/open-stripe-checkout.js"></script>
 <script src="/js/pages/account/account-overview.page.js"></script>
 <script src="/js/pages/account/edit-password.page.js"></script>
 <script src="/js/pages/account/edit-profile.page.js"></script>

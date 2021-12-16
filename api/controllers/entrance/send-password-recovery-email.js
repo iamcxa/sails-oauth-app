@@ -32,14 +32,14 @@ module.exports = {
 
     // Find the record for this user.
     // (Even if no such user exists, pretend it worked to discourage sniffing.)
-    var userRecord = await User.findOne({ emailAddress });
+    let userRecord = await User.findOne({ emailAddress });
     if (!userRecord) {
       return;
     }//•
 
     // Come up with a pseudorandom, probabilistically-unique token for use
     // in our password recovery email.
-    var token = await sails.helpers.strings.random('url-friendly');
+    let token = await sails.helpers.strings.random('url-friendly');
 
     // Store the token on the user record
     // (This allows us to look up the user when the link from the email is clicked.)

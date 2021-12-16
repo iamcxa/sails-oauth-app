@@ -12,14 +12,14 @@
 module.exports.bootstrap = async function() {
 
   // Import dependencies
-  var path = require('path');
+  let path = require('path');
 
   // This bootstrap version indicates what version of fake data we're dealing with here.
-  var HARD_CODED_DATA_VERSION = 0;
+  let HARD_CODED_DATA_VERSION = 0;
 
   // This path indicates where to store/look for the JSON file that tracks the "last run bootstrap info"
   // locally on this development computer (if we happen to be on a development computer).
-  var bootstrapLastRunInfoPath = path.resolve(sails.config.appPath, '.tmp/bootstrap-version.json');
+  let bootstrapLastRunInfoPath = path.resolve(sails.config.appPath, '.tmp/bootstrap-version.json');
 
   // Whether or not to continue doing the stuff in this file (i.e. wiping and regenerating data)
   // depends on some factors:
@@ -37,7 +37,7 @@ module.exports.bootstrap = async function() {
     }//•
 
     // Compare bootstrap version from code base to the version that was last run
-    var lastRunBootstrapInfo = await sails.helpers.fs.readJson(bootstrapLastRunInfoPath)
+    let lastRunBootstrapInfo = await sails.helpers.fs.readJson(bootstrapLastRunInfoPath)
     .tolerate('doesNotExist');// (it's ok if the file doesn't exist yet-- just keep going.)
 
     if (lastRunBootstrapInfo && lastRunBootstrapInfo.lastRunVersion === HARD_CODED_DATA_VERSION) {

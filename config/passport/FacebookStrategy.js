@@ -1,18 +1,18 @@
-var passport = require('passport');
-var FacebookStrategy = require('passport-facebook').Strategy;
-var request = require('request');
+let passport = require('passport');
+let FacebookStrategy = require('passport-facebook').Strategy;
+let request = require('request');
 const config = require('../local');
 
 
-var verifyHandler = function(req, token, tokenSecret, profile, done) {
+let verifyHandler = function(req, token, tokenSecret, profile, done) {
 
   console.log('profile=>', profile);
 
   process.nextTick(() => {
-    var url = 'https://graph.facebook.com/v2.10/me?access_token=%s&fields=id,email,first_name,last_name';
+    let url = 'https://graph.facebook.com/v2.10/me?access_token=%s&fields=id,email,first_name,last_name';
     url = url.replace('%s', token);
 
-    var options = {method: 'GET', url: url, json: true};
+    let options = {method: 'GET', url: url, json: true};
     request(options, (err, response) => {
       if (err) {
         return done(null, null);

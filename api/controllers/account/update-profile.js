@@ -32,7 +32,7 @@ module.exports = {
 
   fn: async function ({fullName, emailAddress}) {
 
-    var newEmailAddress = emailAddress;
+    let newEmailAddress = emailAddress;
     if (newEmailAddress !== undefined) {
       newEmailAddress = newEmailAddress.toLowerCase();
     }
@@ -40,7 +40,7 @@ module.exports = {
     // Determine if this request wants to change the current user's email address,
     // revert her pending email address change, modify her pending email address
     // change, or if the email address won't be affected at all.
-    var desiredEmailEffect;// ('change-immediately', 'begin-change', 'cancel-pending-change', 'modify-pending-change', or '')
+    let desiredEmailEffect;// ('change-immediately', 'begin-change', 'cancel-pending-change', 'modify-pending-change', or '')
     if (
       newEmailAddress === undefined ||
       (this.req.me.emailStatus !== 'change-requested' && newEmailAddress === this.req.me.emailAddress) ||
@@ -74,7 +74,7 @@ module.exports = {
 
     // Start building the values to set in the db.
     // (We always set the fullName if provided.)
-    var valuesToSet = {
+    let valuesToSet = {
       fullName,
     };
 

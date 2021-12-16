@@ -1,5 +1,3 @@
-const {signup} = require('./user');
-
 module.exports = {
 
   sendFirstSignedVerificationEmail: async function({ fullName, emailAddress, emailProofToken }) {

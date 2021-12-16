@@ -124,9 +124,9 @@ module.exports = {
 
   fn: async function({template, templateData, to, toName, subject, from, fromName, layout, ensureAck, bcc, attachments}) {
 
-    var path = require('path');
-    var url = require('url');
-    var util = require('util');
+    let path = require('path');
+    let url = require('url');
+    let util = require('util');
 
 
     if (!_.startsWith(path.basename(template), 'email-')) {
@@ -153,8 +153,8 @@ module.exports = {
     }//•
 
     // Determine appropriate email layout and template to use.
-    var emailTemplatePath = path.join('emails/', template);
-    var emailTemplateLayout;
+    let emailTemplatePath = path.join('emails/', template);
+    let emailTemplateLayout;
     if (layout) {
       emailTemplateLayout = path.relative(path.dirname(emailTemplatePath), path.resolve('layouts/', layout));
     } else {
@@ -165,7 +165,7 @@ module.exports = {
     // > Note that we set the layout, provide access to core `url` package (for
     // > building links and image srcs, etc.), and also provide access to core
     // > `util` package (for dumping debug data in internal emails).
-    var htmlEmailContents = await sails.renderView(
+    let htmlEmailContents = await sails.renderView(
       emailTemplatePath,
       _.extend({layout: emailTemplateLayout, url, util }, templateData)
     )
@@ -185,11 +185,11 @@ module.exports = {
     // > for convenience during development, but also for safety.  (For example,
     // > a special-cased version of "user@example.com" is used by Trend Micro Mars
     // > scanner to "check apks for malware".)
-    var isToAddressConsideredFake = Boolean(to.match(/@example\.com$/i));
+    let isToAddressConsideredFake = Boolean(to.match(/@example\.com$/i));
 
     // If that's the case, or if we're in the "test" environment, then log
     // the email instead of sending it:
-    var dontActuallySend = (
+    let dontActuallySend = (
       sails.config.environment === 'test' || isToAddressConsideredFake
     );
     if (dontActuallySend) {
@@ -237,8 +237,8 @@ module.exports = {
         );
       }
 
-      var subjectLinePrefix = sails.config.environment === 'production' ? '' : sails.config.environment === 'staging' ? '[FROM STAGING] ' : '[FROM LOCALHOST] ';
-      var messageData = {
+      let subjectLinePrefix = sails.config.environment === 'production' ? '' : sails.config.environment === 'staging' ? '[FROM STAGING] ' : '[FROM LOCALHOST] ';
+      let messageData = {
         htmlMessage: htmlEmailContents,
         to: to,
         toName: toName,
@@ -249,7 +249,7 @@ module.exports = {
         attachments
       };
 
-      var deferred = sails.helpers.sendgrid.sendHtmlEmail.with(messageData);
+      let deferred = sails.helpers.sendgrid.sendHtmlEmail.with(messageData);
       if (ensureAck) {
         await deferred;
       } else {

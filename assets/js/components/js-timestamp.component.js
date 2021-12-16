@@ -105,8 +105,8 @@ parasails.registerComponent('jsTimestamp', {
   methods: {
 
     _formatTimeago: function() {
-      var now = new Date().getTime();
-      var timeDifference = Math.abs(now - this.at);
+      let now = new Date().getTime();
+      let timeDifference = Math.abs(now - this.at);
 
       // If the timestamp is less than a day old, format as time ago.
       if(timeDifference < 1000*60*60*24) {

@@ -18,7 +18,7 @@ module.exports = function(grunt) {
       src: require('path').basename(require('sails-hook-grunt/accessible/babel-polyfill')),
       dest: '.tmp/public/polyfill'
     }));
-    var devLinkFiles = grunt.config.get('sails-linker.devJs.files');
+    let devLinkFiles = grunt.config.get('sails-linker.devJs.files');
     grunt.config.set('sails-linker.devJs.files', Object.keys(devLinkFiles).reduce((linkerConfigSoFar, glob)=>{
       linkerConfigSoFar[glob] = ['.tmp/public/polyfill/polyfill.min.js'].concat(devLinkFiles[glob]);
       return linkerConfigSoFar;

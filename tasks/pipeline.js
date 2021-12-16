@@ -31,7 +31,7 @@
 // > Note: if you're using built-in LESS support with default settings,
 // > you'll want to change `assets/styles/importer.less` instead.
 //
-var cssFilesToInject = [
+let cssFilesToInject = [
 
   // Bring in `.css` files for themes and style guides (e.g. Bootstrap, Foundation)
   'dependencies/**/*.css',
@@ -59,7 +59,7 @@ var cssFilesToInject = [
 //
 // Client-side javascript files to inject as <script> tags, in order.
 //
-var jsFilesToInject = [
+let jsFilesToInject = [
 
   // Load `sails.io` before everything else.
   'dependencies/sails.io.js',
@@ -112,7 +112,7 @@ var jsFilesToInject = [
 // > to check out:
 // >   https://sailsjs.com/docs/concepts/assets/task-automation
 //
-var templateFilesToInject = [
+let templateFilesToInject = [
   'templates/**/*.html'
 ];
 
@@ -130,7 +130,7 @@ var templateFilesToInject = [
 // the code below, unless you are modifying the default asset pipeline.**
 
 // Default path for public folder (see documentation on sailsjs.com for more information)
-var tmpPath = '.tmp/public/';
+let tmpPath = '.tmp/public/';
 
 // Prefix relative paths to source files so they point to the proper locations
 // (i.e. where the other Grunt tasks spit them out, or in some cases, where

@@ -8,10 +8,10 @@ module.exports = {
 
   fn: async function(){
 
-    var path = require('path');
+    let path = require('path');
 
-    var endpointsByMethodName = {};
-    var extraEndpointsOnlyForTestsByMethodName = {};
+    let endpointsByMethodName = {};
+    let extraEndpointsOnlyForTestsByMethodName = {};
 
     for (let address in sails.config.routes) {
       let target = sails.config.routes[address];
@@ -38,9 +38,9 @@ module.exports = {
       // Just about everything else gets a Cloud SDK method.
 
       // We determine its name using the bare action name.
-      var bareActionName = _.last(target.action.split(/\//));
-      var methodName = _.camelCase(bareActionName);
-      var expandedAddress = sails.getRouteFor(target);
+      let bareActionName = _.last(target.action.split(/\//));
+      let methodName = _.camelCase(bareActionName);
+      let expandedAddress = sails.getRouteFor(target);
 
       // Skip routes that just serve views.
       // (but still generate them for use in tests, for convenience)
@@ -61,12 +61,12 @@ module.exports = {
       // (deduced the same way as helpers)
       // > If there is no such action for some reason, then don't compile a
       // > method for this one.
-      var requestable = sails.getActions()[target.action];
+      let requestable = sails.getActions()[target.action];
       if (!requestable) {
         sails.log.warn('Skipping unrecognized action: `'+target.action+'`');
         continue;
       }
-      var def = requestable.toJSON && requestable.toJSON();
+      let def = requestable.toJSON && requestable.toJSON();
       if (def && def.fn) {
         if (def.args !== undefined) {
           endpointsByMethodName[methodName].args = def.args;
@@ -116,7 +116,7 @@ Cloud.setup({
 
     // Also, if a `test/` folder exists, set up a barebones bounce of this data
     // as a JSON file inside of it, for testing purposes:
-    var hasTestFolder = await sails.helpers.fs.exists(path.resolve(sails.config.appPath, 'test/'));
+    let hasTestFolder = await sails.helpers.fs.exists(path.resolve(sails.config.appPath, 'test/'));
     if (hasTestFolder) {
       await sails.helpers.fs.write.with({
         destination: path.resolve(sails.config.appPath, 'test/private/CLOUD_SDK_METHODS.json'),

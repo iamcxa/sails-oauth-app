@@ -46,7 +46,7 @@ module.exports = {
     }
 
     // Look up the user with this reset token.
-    var userRecord = await User.findOne({ passwordResetToken: token });
+    let userRecord = await User.findOne({ passwordResetToken: token });
 
     // If no such user exists, or their token is expired, bail.
     if (!userRecord || userRecord.passwordResetTokenExpiresAt <= Date.now()) {
@@ -54,7 +54,7 @@ module.exports = {
     }
 
     // Hash the new password.
-    var hashed = await sails.helpers.passwords.hashPassword(password);
+    let hashed = await sails.helpers.passwords.hashPassword(password);
 
     // Store the user's new password and clear their reset token so it can't be used again.
     await User.updateOne({ id: userRecord.id })

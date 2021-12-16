@@ -14,8 +14,8 @@ module.exports = function defineCustomHook(sails) {
 
       sails.log.info('Initializing project hook... (`api/hooks/custom/`)');
 
-      var IMPORTANT_SENDGRID_CONFIG = ['sendgridSecret', 'internalEmailAddress'];
-      var isMissingSendgridConfig = _.difference(IMPORTANT_SENDGRID_CONFIG, Object.keys(sails.config.custom)).length > 0;
+      let IMPORTANT_SENDGRID_CONFIG = ['sendgridSecret', 'internalEmailAddress'];
+      let isMissingSendgridConfig = _.difference(IMPORTANT_SENDGRID_CONFIG, Object.keys(sails.config.custom)).length > 0;
 
       if (isMissingSendgridConfig) {
 
@@ -89,7 +89,7 @@ will be disabled and/or hidden in the UI.
           skipAssets: true,
           fn: async function(req, res, next){
 
-            var url = require('url');
+            let url = require('url');
 
             // First, if this is a GET request (and thus potentially a view),
             // attach a couple of guaranteed locals.
@@ -125,7 +125,7 @@ will be disabled and/or hidden in the UI.
             // > development (e.g. so you can preview an app running locally on
             // > your laptop using a local IP address or a tool like ngrok, in
             // > case you want to run it on a real, physical mobile/IoT device)
-            var configuredBaseHostname;
+            let configuredBaseHostname;
             try {
               configuredBaseHostname = url.parse(sails.config.custom.baseUrl).host;
             } catch (unusedErr) { /*…*/}
@@ -142,7 +142,7 @@ will be disabled and/or hidden in the UI.
             if (!req.session.userId) { return next(); }
 
             // Otherwise, look up the logged-in user.
-            var loggedInUser = await User.findOne({
+            let loggedInUser = await User.findOne({
               id: req.session.userId
             });
 
@@ -172,8 +172,8 @@ will be disabled and/or hidden in the UI.
             // to the current timestamp.
             //
             // (Note: As an optimization, this is run behind the scenes to avoid adding needless latency.)
-            var MS_TO_BUFFER = 60*1000;
-            var now = Date.now();
+            let MS_TO_BUFFER = 60*1000;
+            let now = Date.now();
             if (loggedInUser.lastSeenAt < now - MS_TO_BUFFER) {
               User.updateOne({id: loggedInUser.id})
               .set({ lastSeenAt: now })
@@ -197,7 +197,7 @@ will be disabled and/or hidden in the UI.
               }
 
               // Exclude any fields corresponding with attributes that have `protect: true`.
-              var sanitizedUser = _.extend({}, loggedInUser);
+              let sanitizedUser = _.extend({}, loggedInUser);
               sails.helpers.redactUser(sanitizedUser);
 
               // If there is still a "password" in sanitized user data, then delete it just to be safe.
