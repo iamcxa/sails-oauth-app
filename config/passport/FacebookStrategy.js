@@ -30,7 +30,7 @@ var verifyHandler = function(req, token, tokenSecret, profile, done) {
         provider: profile.provider || 'facebook',
 
         email:  response.body.email,
-        password: '1', //`${Date.now()}${Math.random().toString(36).substr(2, 5)}}`,
+        password: ' ', //`${Date.now()}${Math.random().toString(36).substr(2, 5)}}`,
         fullName: profile.displayName,
         isSuperAdmin: false,
         emailStatus: 'confirmed',
