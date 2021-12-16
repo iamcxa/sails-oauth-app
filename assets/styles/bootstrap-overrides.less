@@ -23,10 +23,11 @@ img {
 h1, h2, h3, h4, h5, h6, p, li, blockquote, label {
   >a:not(.btn), small >a:not(.btn) {
     color: @brand;
-    border-bottom: 1px solid @text-normal;
+    border-bottom: 1px solid @brand;
     &:hover {
       text-decoration: none;
       color: @text-normal;
+      border-bottom: 1px solid @text-normal;
     }
   }
 }
@@ -42,3 +43,29 @@ blockquote {
    right: 12px;
  }
 
+.hr {
+  background-color: #BBB;
+  height: 1px;
+  position: relative;
+  top: 0.7rem;
+  width: 100%;
+}
+
+
+.btn-oauth() {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+.provider-google {
+  .btn-oauth();
+  background-image: url("../images/logo-google.svg");
+}
+
+.provider-facebook {
+  .btn-oauth();
+  background-image: url("../images/logo-facebook.svg");
+}

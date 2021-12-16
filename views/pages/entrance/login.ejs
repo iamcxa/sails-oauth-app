@@ -1,6 +1,6 @@
 <div id="login" v-cloak>
     <div class="container-fluid pt-5 pb-5">
-        <h1 class="text-center">Sign in to your account</h1>
+        <h1 class="text-center font-weight-bold">Welcome back, friend.</h1>
         <div style="max-width: 450px;" class="mx-auto">
             <hr/>
             <ajax-form action="login" :syncing.sync="syncing" :cloud-error.sync="cloudError" :form-data="formData"
@@ -29,23 +29,34 @@
                 <cloud-error v-else-if="cloudError"></cloud-error>
                 <div class="form-group">
                     <ajax-button :syncing="syncing" class="btn-dark btn-lg btn-block">Sign in</ajax-button>
+                </div>
 
-                    <div class="text-center">-- OR --</div>
+                <p class="text-center"><a href="/password/forgot">Forgot your password?</a></p>
 
+                <p class="text-center d-flex flex-row mt-1">
+                    <span class="hr mr-3"></span>
+                    OR
+                    <span class="hr ml-3"></span>
+                </p>
+
+                <div class="form-group">
                     <ajax-button @click="loginWithGoogle()" type="button" :syncing="syncing"
-                                 class="btn-secondary btn-lg btn-block">
-                        <i class="fa fa-google"></i>
-                        Login with Google
+                                 class="btn-light btn-lg btn-block text-left border">
+                        <span class="align-items-center d-flex ml-3">
+                            <span class="mr-3 provider-google"></span>
+                            Continue with Google
+                        </span>
                     </ajax-button>
 
                     <ajax-button @click="loginWithFacebook()" type="button" :syncing="syncing"
-                                 class="btn-secondary btn-lg btn-block">
-                        <i class="fa fa-facebook"></i>
-                        Login with Facebook
+                                 class="btn-light btn-lg btn-block text-left border">
+                        <span class="align-items-center d-flex ml-3">
+                            <span class="mr-3 provider-facebook"></span>
+                            Continue with Facebook
+                        </span>
                     </ajax-button>
                 </div>
             </ajax-form>
-            <p class="text-center"><a href="/password/forgot">Forgot your password?</a></p>
         </div>
     </div>
 </div>

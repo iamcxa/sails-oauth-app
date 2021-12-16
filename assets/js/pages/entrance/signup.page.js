@@ -57,11 +57,11 @@ parasails.registerPage('signup', {
       }
     },
 
-    signinWithFacebook: function() {
+    loginWithFacebook: function() {
       window.location = '/api/v1/auth/facebook';
     },
 
-    signinWithGoogle: function() {
+    loginWithGoogle: function() {
       window.location = '/api/v1/auth/google';
     },
 

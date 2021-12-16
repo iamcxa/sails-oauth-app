@@ -1,8 +1,8 @@
 <div id="signup" v-cloak>
     <div class="container-fluid pt-5 pb-5" v-if="!cloudSuccess">
-        <h1 class="text-center">Create an account</h1>
+        <h1 class="text-center font-weight-bold">Hi, visitor.</h1>
         <div style="max-width: 450px;" class="mx-auto">
-            <p class="text-center">Let's get started! Becoming a member is free and only takes a few minutes.</p>
+            <p class="text-center font-weight-normal">Let's get your profile in few minutes.</p>
             <hr/>
             <ajax-form ref="form" action="signup" :syncing.sync="syncing" :cloud-error.sync="cloudError"
                        :form-errors.sync="formErrors" :form-data="formData" :form-rules="formRules"
@@ -59,21 +59,32 @@
                 <div class="form-group">
                     <ajax-button type="submit" :syncing="syncing" class="btn-dark btn-lg btn-block">Create account
                     </ajax-button>
+                </div>
 
-                    <div class="text-center">-- OR --</div>
+                <p class="text-center d-flex flex-row mt-1">
+                    <span class="hr mr-3"></span>
+                    OR
+                    <span class="hr ml-3"></span>
+                </p>
 
-                    <ajax-button @click="signinWithGoogle" type="button" :syncing="syncing"
-                                 class="btn-secondary btn-lg btn-block">
-                        <i class="fa fa-google"></i>
-                        Signup with Google
+                <div class="form-group">
+                    <ajax-button @click="loginWithGoogle()" type="button" :syncing="syncing"
+                                 class="btn-light btn-lg btn-block text-left border">
+                        <span class="align-items-center d-flex ml-3">
+                            <span class="mr-3 provider-google"></span>
+                            Continue with Google
+                        </span>
                     </ajax-button>
 
-                    <ajax-button @click="signinWithFacebook" type="button" :syncing="syncing"
-                                 class="btn-secondary btn-lg btn-block">
-                        <i class="fa fa-facebook"></i>
-                        Signup with Facebook
+                    <ajax-button @click="loginWithFacebook()" type="button" :syncing="syncing"
+                                 class="btn-light btn-lg btn-block text-left border">
+                        <span class="align-items-center d-flex ml-3">
+                            <span class="mr-3 provider-facebook"></span>
+                            Continue with Facebook
+                        </span>
                     </ajax-button>
                 </div>
+
             </ajax-form>
             <p class="text-center">Have an account? <a href="/login">Sign in</a></p>
         </div>
