@@ -44,6 +44,8 @@ var verifyHandler = function(req, token, tokenSecret, profile, done) {
 passport.use(new FacebookStrategy({
   clientID: config.custom.oAuth.facebook.clientId,
   clientSecret: config.custom.oAuth.facebook.clientSecret,
-  callbackURL: '/api/v1/auth/facebook/callback',
+  callbackURL: sails.config.environment === 'production'
+    ? sails.config.custom.baseUrl + '/api/v1/auth/facebook/callback'
+    : '/api/v1/auth/facebook/callback',
   passReqToCallback: true
 }, verifyHandler));

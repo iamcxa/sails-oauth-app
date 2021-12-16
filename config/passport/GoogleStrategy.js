@@ -22,6 +22,8 @@ const verifyHandler = function (req, token, tokenSecret, profile, done) {
 passport.use(new GoogleStrategy({
   clientID: config.custom.oAuth.google.clientId,
   clientSecret: config.custom.oAuth.google.clientSecret,
-  callbackURL: '/api/v1/auth/google/callback',
+  callbackURL: sails.config.environment === 'production'
+    ? sails.config.custom.baseUrl + '/api/v1/auth/google/callback'
+    : '/api/v1/auth/google/callback',
   passReqToCallback: true
 }, verifyHandler));

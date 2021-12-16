@@ -23,7 +23,7 @@ module.exports = {
 
     passport.authenticate('facebook', async (err, user) => {
       if(err) {
-        sails.log.error('google callback error: ', err);
+        sails.log.error('facebook callback error: ', err);
 
         // redirect to login page
         return res.redirect('/signup');
