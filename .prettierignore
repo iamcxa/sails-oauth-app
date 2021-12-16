@@ -1,0 +1,10 @@
+node_modules/**
+migrations/**
+coverage/**
+scripts/**
+devpod/**
+charts/**
+assets/**
+views/**
+**/package-lock.json
+**/package.json

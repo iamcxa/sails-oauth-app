@@ -1,0 +1,20 @@
+{
+  "api/**/*.js": [
+    "prettier --write",
+    "eslint --cache --fix --max-warnings=0"
+  ],
+  "config/**/*.js": [
+    "prettier --write",
+    "eslint --cache --fix --max-warnings=0"
+  ],
+  "database/**/*.js": [
+    "prettier --write",
+    "eslint --cache --fix --max-warnings=0"
+  ],
+  "test/**/*.js": [
+    "prettier --write"
+  ],
+  "views/**/*.{css}": "prettier --write",
+  "*.{json}": "prettier --write"
+}
+
