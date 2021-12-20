@@ -1,31 +1,30 @@
 /**
- * 200 (unauthorized) Response
+ * 200 (logout) Response
  *
  * @example
  * Usage:
- * return res.unauthorized();
- * return res.unauthorized(data);
- * return res.unauthorized(data, 'auth/login');
+ * return res.logout();
+ * return res.logout(data);
+ * return res.logout(data, 'auth/login');
  *
  * @param  {String|Object} data
  * @param  {String|Object} options
  *          - pass string to render specified view
  * @return {Object|Any} response
  */
-module.exports = async function unauthorized(
-  data = 'response.unauthorized.incorrect',
-  options,
-) {
+module.exports = async function logout(data = 'response.success.logout', options) {
   return sails.helpers.sendResponse.with({
     data,
     options,
     env: this,
     statusCode: 401,
     callback: (req, res, payload) => {
-      // Or log them out (if necessary) and then redirect to the login page.
       if (req.session.userId) {
         delete req.session.userId;
       }
+      req.session.authenticated = false;
+      req.session.destroy();
+      req.logout && req.logout();
       return payload;
     },
   });

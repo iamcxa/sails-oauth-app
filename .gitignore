@@ -132,4 +132,7 @@ lib-cov
 *.out
 *.pid
 
+coverage
+.nyc_output
 .eslintcache
+swagger.json

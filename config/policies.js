@@ -9,8 +9,7 @@
  */
 
 module.exports.policies = {
-
-  '*': 'is-logged-in',
+  '*': ['jwt-encode', 'jwt-decode', 'passport', 'is-logged-in'],
 
   // all path under `oauth` path bypass the logged in check because it accepts the oauth request.
   'oauth/*': true,
@@ -28,4 +27,7 @@ module.exports.policies = {
   'legal/view-privacy': true,
   'deliver-contact-form-message': true,
 
+  // apply jwt flag
+  'entrance/login': 'jwt-encode',
+  'entrance/signup': 'jwt-encode',
 };

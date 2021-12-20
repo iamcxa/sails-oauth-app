@@ -1,3 +1,4 @@
+// eslint-disable-next-line valid-jsdoc
 /**
  * is-logged-in
  *
@@ -8,8 +9,7 @@
  *   https://sailsjs.com/docs/concepts/policies
  *   https://sailsjs.com/docs/concepts/policies/access-control-and-permissions
  */
-module.exports = async function (req, res, proceed) {
-
+module.exports = async function(req, res, proceed) {
   // If `req.me` is set, then we know that this request originated
   // from a logged-in user.  So we can safely proceed to the next policy--
   // or, if this is the last policy, the relevant action.
@@ -17,15 +17,20 @@ module.exports = async function (req, res, proceed) {
   // > custom hook (`api/hooks/custom/index.js`).
   if (req.me) {
     // only redirect oAuthed user to set new password when their request view resource.
-    if (!req.me.password.trim() && !req.me.oauthSkipPassword && !req.url.includes('/api')) {
-      sails.log('...logged in user has not set password yet, so redirecting to set up page.');
+    if (
+      (!req.me.password || !req.me.password.trim()) &&
+      !req.me.oauthSkipPassword &&
+      !req.url.includes('/api')
+    ) {
+      sails.log(
+        '...logged in user has not set password yet, so redirecting to set up page.',
+      );
       res.redirect('/account/set-password');
     }
     return proceed();
   }
 
-  //--•
+  // --•
   // Otherwise, this request did not come from a logged-in user.
   return res.unauthorized();
-
 };

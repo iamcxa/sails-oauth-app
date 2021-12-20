@@ -1,3 +1,4 @@
+// eslint-disable-next-line valid-jsdoc
 /**
  * expired.js
  *
@@ -16,19 +17,35 @@
  *       badToken: {
  *         description: 'Provided token was expired, invalid, or already used up.',
  *         responseType: 'expired'
-*       }
+ *       }
  *     }
  * ```
  */
-module.exports = function expired() {
-  let req = this.req;
-  let res = this.res;
+module.exports = function expired(data, options) {
+  // let req = this.req;
+  // let res = this.res;
+  //
+  // sails.log.verbose('Ran custom response: res.expired()');
+  //
+  // if (req.wantsJSON) {
+  //   return res.status(498).send('Token Expired/Invalid');
+  // } else {
+  //   return res.status(498).view('498');
+  // }
 
-  sails.log.verbose('Ran custom response: res.expired()');
-
-  if (req.wantsJSON) {
-    return res.status(498).send('Token Expired/Invalid');
-  } else {
-    return res.status(498).view('498');
-  }
+  return sails.helpers.sendResponse.with({
+    data,
+    options,
+    env: this,
+    statusCode: 498,
+    callback: (req, res, payload) => {
+      if (req.session.userId) {
+        delete req.session.userId;
+      }
+      req.session.authenticated = false;
+      req.session.destroy();
+      req.logout && req.logout();
+      return payload;
+    },
+  });
 };

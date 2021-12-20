@@ -1,4 +1,18 @@
 {
-  "Welcome": "Welcome",
-  "A brand new app.": "A brand new app."
+	"Welcome": "Welcome",
+	"A brand new app.": "A brand new app.",
+	"response": {
+		"unauthorized": {
+			"userNotFound": "Giving user identity is not exists",
+			"incorrect": "Identifier or password is incorrect.",
+			"no-password": "account-no-password",
+			"not-found": "account-not-found",
+			"tokenExpiredError": "tokenExpiredError"
+		},
+		"success": {
+			"update-password": "Password updated successfully, please use new password in next login.",
+			"logout": "Logout successfully.",
+			"requested": "requested"
+		}
+	}
 }
