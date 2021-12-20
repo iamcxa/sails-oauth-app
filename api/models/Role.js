@@ -1,7 +1,5 @@
-/* eslint-disable max-len */
-
 /**
- * Passport.js
+ * Role.js
  *
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
@@ -55,35 +53,43 @@ module.exports = {
       primaryKey: true,
     },
 
-    provider: {
+    authority: {
+      type: Sequelize.STRING(45),
+      allowNull: false,
+      unique: true,
+    },
+
+    title: {
       type: Sequelize.STRING(191),
       allowNull: false,
-      unique: false,
     },
 
-    accessToken: {
-      type: Sequelize.TEXT,
-      allowNull: false,
-      unique: false,
-      maxLength: 255,
-    },
-
-    refreshToken: {
-      type: Sequelize.TEXT,
+    description: {
+      type: Sequelize.STRING(191),
       allowNull: true,
-      unique: false,
-      maxLength: 255,
     },
 
-    refreshedAt: {
-      type: Sequelize.BIGINT,
-      description:
-        'A JS timestamp (epoch ms) representing the moment at which this user most recently interacted with the backend while logged in (or 0 if they have not interacted with the backend at all yet).',
-      example: 1502844074211,
+    isActive: {
+      type: Sequelize.BOOLEAN,
+      allowNull: true,
+      defaultValue: true,
     },
   },
   associations() {
-    sails.models.passport.belongsTo(sails.models.user);
+    sails.models.user.Role = sails.models.user.belongsToMany(sails.models.role, {
+      through: 'UserRoles',
+      foreignKey: {
+        name: 'UserId',
+        as: 'Users',
+      },
+    });
+    sails.models.role.User = sails.models.role.belongsToMany(sails.models.user, {
+      through: 'UserRoles',
+      foreignKey: {
+        name: 'RoleId',
+        as: 'Roles',
+      },
+    });
   },
   options: {
     paranoid: false,
