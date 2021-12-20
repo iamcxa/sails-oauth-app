@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+  "baseUrl": ".",
+    "paths": {
+      "@/*": ["./api/*"],
+      "@api": ["./api/*"],
+      "@hooks": ["./api/hooks/*"],
+      "@requests": ["./api/requests/*"],
+      "@notifications": ["./api/notifications/*"],
+      "@scopes": ["./api/scopes/*"],
+      "@models": ["./api/models/*"],
+      "@enums": ["./api/enums/*"],
+      "@traits": ["./api/traits/*"],
+      "@presenters": ["./api/presenters/*"],
+      "@samples": ["./api/samples/*"],
+      "@factories": ["./database/factories/*"]
+    }
+  }
+}
