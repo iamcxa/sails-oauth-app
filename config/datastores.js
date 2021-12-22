@@ -62,4 +62,12 @@ module.exports.datastores = {
       logging: false,
     },
   },
+
+  sqlite: {
+    dialect: 'sqlite',
+    storage: ':memory',
+    options: {
+      dialect: 'sqlite',
+    },
+  },
 };
