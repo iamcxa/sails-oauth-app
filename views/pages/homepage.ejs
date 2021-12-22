@@ -200,17 +200,28 @@
             </div>
         </div>
 
-        <hr/>
-
-        <div class="text-center py-5" purpose="pep-talk">
-            <h3>Let's get to work.</h3>
-            <p style="max-width: 800px;" class="mx-auto">We think this project is a pretty convenient starting point,
-                but of course there's no one-size-fits-all solution. The good news is, this app is in your hands now, so
-                you can jump into the files and adapt it to your needs. Change some code around. Break stuff. Fix it.
-                And above all: <strong>make something people want to use</strong>.</p>
-            <p class="mb-5"><span class="text-muted">&hearts;</span> <a href="https://sailsjs.com/about"
-                                                                        class="border-0">The Sails Team</a></p>
+        <div class="pt-5" purpose="setup-section">
+            <div class="d-flex">
+                <h3 class="text-left">Roadmap</h3>
+                <span class="hr ml-3 mt-1"></span>
+            </div>
+            <!--      section      -->
+            <div class="position-relative my-5" purpose="setup-step">
+                <div style="left: 0; top: 0; width: 140px;" class="position-absolute d-none d-lg-block text-center">
+                    <i class="fa fa-road fa-3x" aria-hidden="true"></i>
+                </div>
+                <ul>
+                    <li>add data-based backstage menu item support back</li>
+                    <li>add design-paired frontend based on Vue or React</li>
+                    <li>update passport strategies(JWT, to support refresh local token)</li>
+                    <li>update socket support - for chatting apps</li>
+                    <li>add back Mocha test framework</li>
+                    <li>add back the UDEA.io push-notification support(AWS SNS)</li>
+                    <li>...</li>
+                </ul>
+            </div>
         </div>
+
     </div>
 </div>
 <%- /* Expose locals as `window.SAILS_LOCALS` :: */ exposeLocalsToBrowser(); %>
