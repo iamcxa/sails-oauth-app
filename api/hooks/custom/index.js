@@ -158,12 +158,14 @@ will be disabled and/or hidden in the UI.
 
             // Otherwise, look up the logged-in user.
             const {user: User, role: Role} = sails.models;
-            const loggedInUser = await User.findOne({
-              where: {id: req.session.userId},
-              include: [Role],
-              raw: true,
-              nest: true,
-            });
+            const loggedInUser =
+              req.user ||
+              (await User.findOne({
+                where: {id: req.session.userId},
+                include: [Role],
+                raw: true,
+                nest: true,
+              }));
 
             // If the logged-in user has gone missing, log a warning,
             // wipe the user id from the requesting user agent's session,

@@ -16,19 +16,18 @@ module.exports.policies = {
   // Bypass the `is-authenticated` policy for:
   'entrance/*': true,
   'account/logout': true,
-  'view-homepage-or-redirect': true,
+  'view-homepage-or-redirect': 'passport',
   'view-faq': true,
   'view-contact': true,
   'legal/view-terms': true,
   'legal/view-privacy': true,
   'deliver-contact-form-message': true,
 
-  'entrance/confirm-email': ['passport'],
-  'entrance/update-password-and-login': ['passport'],
   'dashboard/view/*': ['passport', 'is-authenticated'],
   'account/view/*': ['passport', 'is-authenticated'],
 
-  // apply jwt flag
+  'entrance/confirm-email': ['passport'],
+  'entrance/update-password-and-login': ['passport'],
   'entrance/login': ['passport'],
   'entrance/signup': ['passport'],
 };

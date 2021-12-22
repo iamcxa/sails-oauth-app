@@ -22,8 +22,6 @@ module.exports = async function unauthorized(
     env: this,
     statusCode: 401,
     callback: async function(req, res, payload) {
-      await sails.helpers.logoutEffect(req);
-
       if (!req.wantsJSON) {
         return res.redirect(sails.config.paths.login);
       }

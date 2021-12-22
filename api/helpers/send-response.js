@@ -149,13 +149,10 @@ module.exports = {
       payload = result;
     }
 
-    // Set status code
-    res.status(statusCode);
-
     // If the user-agent wants JSON, always respond with JSON
     if (req.wantsJSON) {
       delete payload.payload;
-      return res.json(payload);
+      return res.status(statusCode).json(payload);
     }
 
     // If second argument is a string, we take that to mean it refers to a view.
@@ -166,7 +163,7 @@ module.exports = {
     // Otherwise, try to guess an appropriate view, or if that doesn't
     // work, just send JSON.
     if (options.view) {
-      return res.view(options.view, payload.payload);
+      return res.status(statusCode).view(options.view, payload.payload);
     }
 
     // If provide a redirect param, do it by the provided value type.
@@ -176,7 +173,7 @@ module.exports = {
 
     // If no second argument provided, try to serve the default view,
     // but fall back to sending JSON(P) if any errors occur.
-    return res.view(statusCode, payload, (err, html) => {
+    return res.status(statusCode).view(statusCode, payload, (err, html) => {
       // If a view error occurred, fall back to JSON(P).
       if (err) {
         // Additionally:

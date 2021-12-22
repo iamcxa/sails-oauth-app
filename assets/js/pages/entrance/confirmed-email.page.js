@@ -16,7 +16,7 @@ parasails.registerPage('confirmed-email', {
   mounted: async function(){
     //…
     setTimeout(() => {
-      window.location = '/account';
+      window.location = '/';
     }, 10 * 1000);
 
     setInterval(() => {

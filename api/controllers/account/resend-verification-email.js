@@ -27,9 +27,7 @@ module.exports = {
 
     if (user.emailStatus !== 'confirmed') {
       // Extend emailProofTokenExpiresAt for the logged-in user.
-      const {emailAddress, emailProofToken, fullName} = await User.updateOne({
-        id: this.req.me.id,
-      }).set({
+      const {emailAddress, emailProofToken, fullName} = await user.update({
         emailProofTokenExpiresAt: Date.now() + sails.config.custom.emailProofTokenTTL,
         emailProofToken: await sails.helpers.strings.random('url-friendly'),
       });

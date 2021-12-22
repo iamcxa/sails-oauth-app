@@ -35,8 +35,6 @@ actually logged in.  (If they weren't, then this action is just a no-op.)`,
   },
 
   fn: async function() {
-    await sails.helpers.logoutEffect(this.req);
-
     // Then finish up, sending an appropriate response.
     // > Under the covers, this persists the now-logged-out session back
     // > to the underlying session store.

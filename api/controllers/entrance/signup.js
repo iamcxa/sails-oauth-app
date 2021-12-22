@@ -75,12 +75,14 @@ the account verification message.)`,
       tosAcceptedByIp: this.req.ip,
     });
 
-    await sails.helpers.loginEffect(this.req, newUserRecord);
-
     await sails.services.user.sendFirstSignedVerificationEmail({
       emailAddress: newEmailAddress,
       emailProofToken: newUserRecord.emailProofToken,
       fullName: newUserRecord.fullName,
     });
+
+    const {req, res} = this;
+
+    return req.logIn(newUserRecord, (err) => res.loggedIn(err, newUserRecord));
   },
 };

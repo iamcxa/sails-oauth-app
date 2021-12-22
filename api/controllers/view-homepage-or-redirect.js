@@ -19,8 +19,12 @@ module.exports = {
   },
 
   fn: async function() {
-    if (this.req.user || this.req.me) {
+    if (this.req.user) {
       // shows the account page
+      if (this.req.user.emailStatus !== 'confirmed') {
+        // eslint-disable-next-line no-throw-literal
+        throw {redirect: '/account'};
+      }
       // eslint-disable-next-line no-throw-literal
       throw {redirect: '/welcome'};
     }
