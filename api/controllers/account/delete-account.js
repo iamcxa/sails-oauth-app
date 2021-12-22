@@ -1,22 +1,30 @@
 module.exports = {
+  /**
+   * @swagger
+   *
+   * /delete-account:
+   *   security:
+   *     - bearer: []
+   *   tags:
+   *     - Account
+   */
 
-
-  friendlyName: 'Delete account',
-
+  friendlyName: 'Account',
 
   description: 'Delete the account of logged-in user.',
 
-
-  inputs: {
-
-  },
-
-
-  fn: async function ({}) {
+  fn: async function() {
+    const {user: User, passport: Passport} = sails.models;
 
     // Delete the user-related data record.
-    await Passport.destroy({ userId: this.req.session.userId });
-    await User.destroyOne({ id: this.req.session.userId });
+    await Passport.destroy({
+      where: {
+        userId: this.req.session.userId,
+      },
+    });
+    await User.destroy({
+      where: {id: this.req.session.userId},
+    });
 
     // Clear the `userId` property from this session.
     delete this.req.session.userId;
@@ -27,7 +35,5 @@ module.exports = {
     }
 
     return this.res.ok();
-  }
-
-
+  },
 };

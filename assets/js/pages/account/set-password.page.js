@@ -18,8 +18,8 @@ parasails.registerPage('set-password', {
     // Form rules
     formRules: {
       password: {
-        required: true,
-        minLength: 8,
+        'required': true,
+        'minLength': 8,
         'minLowerString': 1,
         'minUpperString': 1,
         'minDigit': 1,
@@ -38,11 +38,11 @@ parasails.registerPage('set-password', {
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
   //  ║  ║╠╣ ║╣ ║  ╚╦╝║  ║  ║╣
   //  ╩═╝╩╚  ╚═╝╚═╝ ╩ ╚═╝╩═╝╚═╝
-  beforeMount: function () {
-    //…
+  beforeMount: function() {
+    // …
   },
-  mounted: async function () {
-    //…
+  mounted: async function() {
+    // …
   },
 
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
@@ -56,16 +56,19 @@ parasails.registerPage('set-password', {
       }
     },
 
-    submittedForm: async function () {
+    submittedForm: async function() {
       // Redirect to a different web page on success.
       // > (Note that we re-enable the syncing state here.  This is on purpose--
       // > to make sure the spinner stays there until the page navigation finishes.)
       this.syncing = true;
-      window.location = '/account';
+      // window.location = '/account';
+
+      const res = await Cloud.updatePassword(this.formData.password);
+
+      console.log('res=>', res)
     },
 
-    submittedFormWithSkipPass: async function () {
-
+    submittedFormWithSkipPass: async function() {
       this.formAction = 'noPassword';
       this.formRules = {};
       this.formErrors = {};
@@ -76,8 +79,11 @@ parasails.registerPage('set-password', {
       this.syncing = true;
 
       try {
-        await Cloud.noPassword();
-        window.location = '/account';
+        const res = await Cloud.noPassword();
+
+        if (res.success) {
+          window.location = '/account';
+        }
       } catch (e) {
         if (e.responseInfo.statusCode === 403) {
           window.location = '/login';
@@ -87,5 +93,5 @@ parasails.registerPage('set-password', {
       }
     },
 
-  }
+  },
 });

@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+const moment = require('moment');
 
 const hashPassword = async function(instance) {
   if (instance.changed('password')) {
@@ -6,7 +7,6 @@ const hashPassword = async function(instance) {
     // Hashing the value with an appropriate cryptographic hash function is better.
     instance.password = await sails.helpers.passwords.hashPassword(instance.password);
   }
-  // return instance;
 };
 
 /**
@@ -128,6 +128,13 @@ email status until they click the link in the confirmation email.`,
       example: 'zh-TW',
     },
 
+    timezone: {
+      type: Sequelize.ENUM(moment.tz.names()),
+      defaultValue: 'Asia/Taipei',
+      description: 'User`s time zone',
+      example: 'zh-TW',
+    },
+
     passwordResetToken: {
       type: Sequelize.STRING(191),
       description:
@@ -174,11 +181,6 @@ email status until they click the link in the confirmation email.`,
       example: 1502844074211,
     },
 
-    isSuperAdmin: {
-      type: Sequelize.BOOLEAN,
-      defaultValue: false,
-    },
-
     isActive: {
       type: Sequelize.BOOLEAN,
       defaultValue: true,
@@ -203,15 +205,41 @@ email status until they click the link in the confirmation email.`,
   },
 
   options: {
+    defaultScope: {},
+
     scopes: require('@/scopes/user'),
 
-    paranoid: true,
+    // soft deletion
+    paranoid: false,
 
     timestamps: true,
 
     hooks: {
       beforeCreate: hashPassword,
       beforeUpdate: hashPassword,
+    },
+
+    classMethods: {
+      deserializeUser: async function(id) {
+        return sails.models.user.scope({method: ['includeRole']}).findByPk(id);
+      },
+      increaseLoggedInCount: async function(id) {
+        const user = await sails.models.user.findByPk(id);
+        user.loggedInCount += 1;
+        await user.save();
+        return user.loggedInCount;
+      },
+      updateLoggedInInformation: async function(id, data) {
+        const user = await sails.models.user.findByPk(id);
+        await user.update(data);
+        return user;
+      },
+    },
+
+    instanceMethods: {
+      checkPassword: async function(password) {
+        return sails.helpers.passwords.checkPassword(password, this.password);
+      },
     },
   },
 };

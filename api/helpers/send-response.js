@@ -71,37 +71,50 @@ module.exports = {
 
     const getExitFromMessage = (message) => {
       const messageArray = message.split('.');
+      if (message.length > 2) {
+        return {
+          exit: `${messageArray[messageArray.length - 2]}.${
+            messageArray[messageArray.length - 1]
+          }`,
+          response: messageArray[messageArray.length - 2],
+        };
+      }
       return {
-        exit: `${messageArray[messageArray.length - 2]}.${
-          messageArray[messageArray.length - 1]
-        }`,
-        response: messageArray[messageArray.length - 2],
+        exit: undefined,
+        response: undefined,
       };
     };
 
     // reformat message
     payload = {
-      data: {},
+      data: payload.data || {},
       payload,
+
+      // status
       success: statusCode < 400,
+      isAuthenticated: req.isAuthenticated ? req.isAuthenticated() : false,
       statusCode,
+
+      // user settings
+      locale: req.param('locale', req.getLocale()),
+      timezone: req.user ? req.user.timezone : undefined,
+
+      // api information
       action: req.options.action,
       controller: req.options.controller,
       stack: sourceData ? sourceData.stack : payload.stack,
-      locale: req.param('locale', req.getLocale()),
-      message:
-        typeof payload.message === 'string' ? sails.__(payload.message) : payload.message,
-      isAuthenticated: req.isAuthenticated || !!req.session.userId || !!req.session.me,
 
       // for extra identified usage
-      exit:
-        typeof payload.message === 'string' ?
-          getExitFromMessage(payload.message).exit :
-          undefined,
       response:
         typeof payload.message === 'string' ?
           getExitFromMessage(payload.message).response :
           undefined,
+      exit:
+        typeof payload.message === 'string' ?
+          getExitFromMessage(payload.message).exit :
+          undefined,
+      message:
+        typeof payload.message === 'string' ? sails.__(payload.message) : payload.message,
     };
 
     if (payload.exit) {
@@ -115,12 +128,19 @@ module.exports = {
       delete payload.stack;
       delete payload.controller;
       delete payload.action;
+      delete payload.timezone;
     }
 
     // runs response callback in order to deal with necessary processes
     if (typeof callback === 'function') {
-      // eslint-disable-next-line callback-return
-      const result = await callback(req, res, payload);
+      let result;
+      if (callback.constructor.name === 'AsyncFunction') {
+        // eslint-disable-next-line callback-return
+        result = await callback(req, res, payload);
+      } else {
+        // eslint-disable-next-line callback-return
+        result = callback(req, res, payload);
+      }
 
       // if payload transform into another response, then return it
       if (result && result.socket) {
@@ -150,30 +170,34 @@ module.exports = {
     }
 
     // If provide a redirect param, do it by the provided value type.
-    if (!req.me && (options.redirect || !req.url.includes('/api'))) {
-      return res.redirect(options.redirect || '/login');
+    if (!req.user && (options.redirect || !req.url.includes('/api'))) {
+      return res.redirect(options.redirect || sails.config.paths.login);
     }
 
     // If no second argument provided, try to serve the default view,
     // but fall back to sending JSON(P) if any errors occur.
-    return res.view(statusCode, {data: payload.payload}, (err, html) => {
+    return res.view(statusCode, payload, (err, html) => {
       // If a view error occurred, fall back to JSON(P).
       if (err) {
         // Additionally:
         // • If the view was missing, ignore the error but provide a verbose log.
         if (err.code === 'E_VIEW_FAILED') {
           sails.log.warn(
-            'response :: Could not locate view for error page (sending JSON instead).  Details: ',
-            err,
+            'Response :: Could not locate view for error page (sending JSON instead), ' +
+              err.message,
           );
+          sails.log.verbose('Details: ', err);
         } else {
           // Otherwise, if this was a more serious error, log to the console with the details.
           sails.log.warn(
-            'response :: When attempting to render error page view, an error occurred (sending JSON instead).  Details: ',
-            err,
+            'Response :: When attempting to render error page view, an error occurred (sending JSON instead), ' +
+              err.message,
           );
+          sails.log.verbose('Details: ', err);
         }
-        delete payload.payload;
+        if (payload && payload.payload) {
+          delete payload.payload;
+        }
         return res.json(payload);
       }
       return res.send(html);

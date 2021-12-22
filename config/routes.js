@@ -14,7 +14,7 @@ module.exports.routes = {
   //  ║║║║╣ ╠╩╗╠═╝╠═╣║ ╦║╣ ╚═╗
   //  ╚╩╝╚═╝╚═╝╩  ╩ ╩╚═╝╚═╝╚═╝
   'GET /': {action: 'view-homepage-or-redirect'},
-  'GET /welcome/:unused?': {action: 'dashboard/view-welcome'},
+  'GET /welcome/:unused?': {action: 'dashboard/view/welcome'},
 
   'GET /faq': {action: 'view-faq'},
   'GET /legal/terms': {action: 'legal/view-terms'},
@@ -29,10 +29,10 @@ module.exports.routes = {
   'GET /password/forgot': {action: 'entrance/view-forgot-password'},
   'GET /password/new': {action: 'entrance/view-new-password'},
 
-  'GET /account': {action: 'account/view-account-overview'},
-  'GET /account/password': {action: 'account/view-edit-password'},
-  'GET /account/profile': {action: 'account/view-edit-profile'},
-  'GET /account/set-password': {action: 'account/view-set-password'},
+  'GET /account': {action: 'account/view/account-overview'},
+  'GET /account/password': {action: 'account/view/edit-password'},
+  'GET /account/profile': {action: 'account/view/edit-profile'},
+  'GET /account/set-password': {action: 'account/view/set-password'},
 
   //  ╔╦╗╦╔═╗╔═╗  ╦═╗╔═╗╔╦╗╦╦═╗╔═╗╔═╗╔╦╗╔═╗   ┬   ╔╦╗╔═╗╦ ╦╔╗╔╦  ╔═╗╔═╗╔╦╗╔═╗
   //  ║║║║╚═╗║    ╠╦╝║╣  ║║║╠╦╝║╣ ║   ║ ╚═╗  ┌┼─   ║║║ ║║║║║║║║  ║ ║╠═╣ ║║╚═╗
@@ -69,7 +69,7 @@ module.exports.routes = {
     action: 'entrance/update-password-and-login',
   },
 
-  'GET   /api/v1/dashboard': {action: 'dashboard/get-statistics'},
+  'GET   /api/v1/dashboard/statistics': {action: 'dashboard/get-statistics'},
 
   'POST  /api/v1/deliver-contact-form-message': {
     action: 'deliver-contact-form-message',
@@ -79,8 +79,10 @@ module.exports.routes = {
     hasSocketFeatures: true,
   },
 
-  'GET /api/v1/auth/google': {action: 'oauth/google-auth'},
-  'GET /api/v1/auth/google/callback': {action: 'oauth/google-callback'},
-  'GET /api/v1/auth/facebook': {action: 'oauth/facebook-auth'},
-  'GET /api/v1/auth/facebook/callback': {action: 'oauth/facebook-callback'},
+  'GET /api/v1/auth/:strategy/callback': {action: 'auth/callback'},
+
+  'GET /api/v1/auth/google': {action: 'auth/google-auth'},
+  // 'GET /api/v1/auth/google/callback': {action: 'auth/google-callback'},
+  'GET /api/v1/auth/facebook': {action: 'auth/facebook-auth'},
+  // 'GET /api/v1/auth/facebook/callback': {action: 'auth/facebook-callback'},
 };

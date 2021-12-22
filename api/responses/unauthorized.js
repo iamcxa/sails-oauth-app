@@ -1,5 +1,5 @@
 /**
- * 200 (unauthorized) Response
+ * 401 (unauthorized) Response
  *
  * @example
  * Usage:
@@ -13,7 +13,7 @@
  * @return {Object|Any} response
  */
 module.exports = async function unauthorized(
-  data = 'response.unauthorized.incorrect',
+  data = 'response.unauthorized.not_login',
   options,
 ) {
   return sails.helpers.sendResponse.with({
@@ -21,10 +21,11 @@ module.exports = async function unauthorized(
     options,
     env: this,
     statusCode: 401,
-    callback: (req, res, payload) => {
-      // Or log them out (if necessary) and then redirect to the login page.
-      if (req.session.userId) {
-        delete req.session.userId;
+    callback: async function(req, res, payload) {
+      await sails.helpers.logoutEffect(req);
+
+      if (!req.wantsJSON) {
+        return res.redirect(sails.config.paths.login);
       }
       return payload;
     },

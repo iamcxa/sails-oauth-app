@@ -1578,7 +1578,7 @@
         //   verb: 'post',
         //   url: '/foo/bar',
         //   protocol: 'io.socket',//optional, defaults to 'jQuery'
-        //   headers: {'x-oauth': 'foo'},//optional, defaults to undefined
+        //   headers: {'x-auth': 'foo'},//optional, defaults to undefined
         // }
         else if (appLevelSdkEndpointDef && typeof appLevelSdkEndpointDef === 'object') {
           if (!_.isUndefined(appLevelSdkEndpointDef.headers)) {

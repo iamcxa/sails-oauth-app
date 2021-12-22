@@ -8,6 +8,8 @@ parasails.registerPage('login', {
 
     // Form data
     formData: {
+      emailAddress: '',
+      password: '',
       rememberMe: true,
     },
 
@@ -18,8 +20,8 @@ parasails.registerPage('login', {
     // A set of validation rules for our form.
     // > The form will not be submitted if these are invalid.
     formRules: {
-      emailAddress: { required: true, isEmail: true },
-      password: { required: true },
+      emailAddress: {required: true, isEmail: true},
+      password: {required: true},
     },
 
     // Server error state for the form
@@ -30,10 +32,10 @@ parasails.registerPage('login', {
   //  ║  ║╠╣ ║╣ ║  ╚╦╝║  ║  ║╣
   //  ╩═╝╩╚  ╚═╝╚═╝ ╩ ╚═╝╩═╝╚═╝
   beforeMount: function() {
-    //…
+    // …
   },
   mounted: async function() {
-    //…
+    // …
   },
 
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
@@ -49,13 +51,21 @@ parasails.registerPage('login', {
       window.location = '/api/v1/auth/google';
     },
 
-    submittedForm: async function() {
+    submittedForm: async function(res) {
       // Redirect to the logged-in dashboard on success.
       // > (Note that we re-enable the syncing state here.  This is on purpose--
       // > to make sure the spinner stays there until the page navigation finishes.)
       this.syncing = true;
-      window.location = '/';
+
+      if (res.success) {
+        parasails.registerConstant('Authorization', res.data.Authorization);
+
+        if (parasails.require('Authorization')) {
+          window.location = '/';
+        }
+      }
+      this.syncing = false;
     },
 
-  }
+  },
 });

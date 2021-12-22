@@ -1,37 +1,36 @@
 module.exports = {
+  /**
+   * @swagger
+   *
+   * /update-profile:
+   *   security:
+   *     - bearer: []
+   *   tags:
+   *     - Account
+   */
 
-
-  friendlyName: 'Update profile',
-
+  friendlyName: 'Account',
 
   description: 'Update the profile for the logged-in user.',
 
-
   inputs: {
-
     fullName: {
-      type: 'string'
+      type: 'string',
     },
 
     emailAddress: {
-      type: 'string'
+      type: 'string',
     },
-
   },
 
-
   exits: {
-
     emailAlreadyInUse: {
       statusCode: 409,
       description: 'The provided email address is already in use.',
     },
-
   },
 
-
-  fn: async function ({fullName, emailAddress}) {
-
+  fn: async function({fullName, emailAddress}) {
     let newEmailAddress = emailAddress;
     if (newEmailAddress !== undefined) {
       newEmailAddress = newEmailAddress.toLowerCase();
@@ -40,46 +39,60 @@ module.exports = {
     // Determine if this request wants to change the current user's email address,
     // revert her pending email address change, modify her pending email address
     // change, or if the email address won't be affected at all.
-    let desiredEmailEffect;// ('change-immediately', 'begin-change', 'cancel-pending-change', 'modify-pending-change', or '')
+    let desiredEmailEffect; // ('change-immediately', 'begin-change', 'cancel-pending-change', 'modify-pending-change', or '')
     if (
       newEmailAddress === undefined ||
-      (this.req.me.emailStatus !== 'change-requested' && newEmailAddress === this.req.me.emailAddress) ||
-      (this.req.me.emailStatus === 'change-requested' && newEmailAddress === this.req.me.emailChangeCandidate)
+      (this.req.me.emailStatus !== 'change-requested' &&
+        newEmailAddress === this.req.me.emailAddress) ||
+      (this.req.me.emailStatus === 'change-requested' &&
+        newEmailAddress === this.req.me.emailChangeCandidate)
     ) {
       desiredEmailEffect = '';
-    } else if (this.req.me.emailStatus === 'change-requested' && newEmailAddress === this.req.me.emailAddress) {
+    } else if (
+      this.req.me.emailStatus === 'change-requested' &&
+      newEmailAddress === this.req.me.emailAddress
+    ) {
       desiredEmailEffect = 'cancel-pending-change';
-    } else if (this.req.me.emailStatus === 'change-requested' && newEmailAddress !== this.req.me.emailAddress) {
+    } else if (
+      this.req.me.emailStatus === 'change-requested' &&
+      newEmailAddress !== this.req.me.emailAddress
+    ) {
       desiredEmailEffect = 'modify-pending-change';
-    } else if (!sails.config.custom.verifyEmailAddresses || this.req.me.emailStatus === 'unconfirmed') {
+    } else if (
+      !sails.config.custom.verifyEmailAddresses ||
+      this.req.me.emailStatus === 'unconfirmed'
+    ) {
       desiredEmailEffect = 'change-immediately';
     } else {
       desiredEmailEffect = 'begin-change';
     }
 
-
     // If the email address is changing, make sure it is not already being used.
-    if (_.contains(['begin-change', 'change-immediately', 'modify-pending-change'], desiredEmailEffect)) {
-      let conflictingUser = await User.findOne({
+    if (
+      _.contains(
+        ['begin-change', 'change-immediately', 'modify-pending-change'],
+        desiredEmailEffect,
+      )
+    ) {
+      const conflictingUser = await User.findOne({
         or: [
-          { emailAddress: newEmailAddress },
-          { emailChangeCandidate: newEmailAddress }
-        ]
+          {emailAddress: newEmailAddress},
+          {emailChangeCandidate: newEmailAddress},
+        ],
       });
       if (conflictingUser) {
+        // eslint-disable-next-line no-throw-literal
         throw 'emailAlreadyInUse';
       }
     }
 
-
     // Start building the values to set in the db.
     // (We always set the fullName if provided.)
-    let valuesToSet = {
+    const valuesToSet = {
       fullName,
     };
 
     switch (desiredEmailEffect) {
-
       // Change now
       case 'change-immediately':
         _.extend(valuesToSet, {
@@ -87,7 +100,8 @@ module.exports = {
           emailChangeCandidate: '',
           emailProofToken: '',
           emailProofTokenExpiresAt: 0,
-          emailStatus: this.req.me.emailStatus === 'unconfirmed' ? 'unconfirmed' : 'confirmed'
+          emailStatus:
+            this.req.me.emailStatus === 'unconfirmed' ? 'unconfirmed' : 'confirmed',
         });
         break;
 
@@ -98,7 +112,7 @@ module.exports = {
           emailChangeCandidate: newEmailAddress,
           emailProofToken: await sails.helpers.strings.random('url-friendly'),
           emailProofTokenExpiresAt: Date.now() + sails.config.custom.emailProofTokenTTL,
-          emailStatus: 'change-requested'
+          emailStatus: 'change-requested',
         });
         break;
 
@@ -108,7 +122,7 @@ module.exports = {
           emailChangeCandidate: '',
           emailProofToken: '',
           emailProofTokenExpiresAt: 0,
-          emailStatus: 'confirmed'
+          emailStatus: 'confirmed',
         });
         break;
 
@@ -116,20 +130,19 @@ module.exports = {
     }
 
     // Save to the db
-    await User.updateOne({id: this.req.me.id })
-    .set(valuesToSet);
+    await User.updateOne({id: this.req.me.id}).set(valuesToSet);
 
     // If an email address change was requested, and re-confirmation is required,
     // send the "confirm account" email.
-    if (desiredEmailEffect === 'begin-change' || desiredEmailEffect === 'modify-pending-change') {
+    if (
+      desiredEmailEffect === 'begin-change' ||
+      desiredEmailEffect === 'modify-pending-change'
+    ) {
       await sails.services.user.sendChangeAddressVerificationEmail({
         fullName: fullName || this.req.me.fullName,
         emailAddress: newEmailAddress,
-        emailProofToken:valuesToSet.emailProofToken,
+        emailProofToken: valuesToSet.emailProofToken,
       });
     }
-
-  }
-
-
+  },
 };

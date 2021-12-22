@@ -3,16 +3,19 @@
 	"A brand new app.": "A brand new app.",
 	"response": {
 		"unauthorized": {
-			"userNotFound": "Giving user identity is not exists",
 			"incorrect": "Identifier or password is incorrect.",
-			"no-password": "account-no-password",
-			"not-found": "account-not-found",
-			"tokenExpiredError": "tokenExpiredError"
+			"no_password": "Account has no password.",
+			"not_found": "Giving user identity is not exists.",
+			"token_expired_error": "Giving token has expired.",
+			"not_login": "No user is logged in"
 		},
 		"success": {
 			"update-password": "Password updated successfully, please use new password in next login.",
 			"logout": "Logout successfully.",
-			"requested": "requested"
-		}
-	}
+			"requested": "requested",
+			"login": "login"
+		},
+		"expired.token_expired_or_invalid": "expired.token_expired_or_invalid"
+	},
+	"": ""
 }

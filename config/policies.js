@@ -7,17 +7,13 @@
  * For more information on configuring policies, check out:
  * https://sailsjs.com/docs/concepts/policies
  */
-
 module.exports.policies = {
-  '*': ['jwt-encode', 'jwt-decode', 'passport', 'is-logged-in'],
+  '*': ['passport', 'jwt-decode', 'is-authenticated'],
 
-  // all path under `oauth` path bypass the logged in check because it accepts the oauth request.
-  'oauth/*': true,
+  // all path under `auth` path bypass the logged in check because it accepts the auth request.
+  'auth/*': ['passport'],
 
-  // this path is used for set up new password for oauth users
-  'account/view-set-password': true,
-
-  // Bypass the `is-logged-in` policy for:
+  // Bypass the `is-authenticated` policy for:
   'entrance/*': true,
   'account/logout': true,
   'view-homepage-or-redirect': true,
@@ -27,7 +23,12 @@ module.exports.policies = {
   'legal/view-privacy': true,
   'deliver-contact-form-message': true,
 
+  'entrance/confirm-email': ['passport'],
+  'entrance/update-password-and-login': ['passport'],
+  'dashboard/view/*': ['passport', 'is-authenticated'],
+  'account/view/*': ['passport', 'is-authenticated'],
+
   // apply jwt flag
-  'entrance/login': 'jwt-encode',
-  'entrance/signup': 'jwt-encode',
+  'entrance/login': ['passport'],
+  'entrance/signup': ['passport'],
 };

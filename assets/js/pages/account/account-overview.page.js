@@ -5,6 +5,8 @@ parasails.registerPage('account-overview', {
   data: {
     RESEND_VERIFY_EMAIL_DELAY: 4000,
 
+    profile: {},
+
     // For <ajax-form>
     formData: { /* … */ },
     formRules: { /* … */ },
@@ -16,11 +18,19 @@ parasails.registerPage('account-overview', {
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
   //  ║  ║╠╣ ║╣ ║  ╚╦╝║  ║  ║╣
   //  ╩═╝╩╚  ╚═╝╚═╝ ╩ ╚═╝╩═╝╚═╝
-  beforeMount: function (){
+  beforeMount: function() {
     _.extend(this, window.SAILS_LOCALS);
   },
   mounted: async function() {
-    //…
+    // …
+
+    const res = await Cloud.getAccount();
+    // .setHeaders({
+    //   'Authorization': parasails.require('Authorization'),
+    // });
+    console.log('res=>', res);
+
+    this.profile = res.data;
   },
 
   //  ╦╔╗╔╔╦╗╔═╗╦═╗╔═╗╔═╗╔╦╗╦╔═╗╔╗╔╔═╗
@@ -37,7 +47,7 @@ parasails.registerPage('account-overview', {
         try {
           const result = await Cloud.resendVerificationEmail();
 
-          if (result === 'OK') {
+          if (result.success) {
             setTimeout(() => {
               this.syncing = false;
             }, this.RESEND_VERIFY_EMAIL_DELAY);
@@ -64,7 +74,7 @@ parasails.registerPage('account-overview', {
         try {
           const result = await Cloud.deleteAccount();
 
-          if (result === 'OK') {
+          if (result.success) {
             window.location = '/login';
           }
         } catch (e) {
@@ -74,5 +84,5 @@ parasails.registerPage('account-overview', {
       }
     },
 
-  }
+  },
 });

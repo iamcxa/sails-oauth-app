@@ -1,26 +1,29 @@
+require('module-alias/register');
+
 module.exports = {
 
   friendlyName: 'Rebuild Cloud SDK',
 
 
+  // eslint-disable-next-line max-len
   description: 'Regenerate the configuration for the "Cloud SDK" -- the JavaScript module used for AJAX and WebSockets.',
 
 
-  fn: async function(){
+  fn: async function() {
+    const path = require('path');
 
-    let path = require('path');
+    const endpointsByMethodName = {};
+    const extraEndpointsOnlyForTestsByMethodName = {};
 
-    let endpointsByMethodName = {};
-    let extraEndpointsOnlyForTestsByMethodName = {};
-
-    for (let address in sails.config.routes) {
+    // eslint-disable-next-line guard-for-in
+    for (const address in sails.config.routes) {
       let target = sails.config.routes[address];
 
       // If the route target is an array, then only consider
       // the very last sub-target in the array.
       if (_.isArray(target)) {
         target = _.last(target);
-      }//ﬁ
+      }// ﬁ
 
       // Skip redirects
       // (Note that, by doing this, we also skip traditional shorthand
@@ -38,19 +41,19 @@ module.exports = {
       // Just about everything else gets a Cloud SDK method.
 
       // We determine its name using the bare action name.
-      let bareActionName = _.last(target.action.split(/\//));
-      let methodName = _.camelCase(bareActionName);
-      let expandedAddress = sails.getRouteFor(target);
+      const bareActionName = _.last(target.action.split(/\//));
+      const methodName = _.camelCase(bareActionName);
+      const expandedAddress = sails.getRouteFor(target);
 
       // Skip routes that just serve views.
       // (but still generate them for use in tests, for convenience)
       if (target.view || (bareActionName.match(/^view-/))) {
         extraEndpointsOnlyForTestsByMethodName[methodName] = {
           verb: (expandedAddress.method||'get').toUpperCase(),
-          url: expandedAddress.url
+          url: expandedAddress.url,
         };
         continue;
-      }//•
+      }// •
 
       endpointsByMethodName[methodName] = {
         verb: (expandedAddress.method||'get').toUpperCase(),
@@ -61,12 +64,12 @@ module.exports = {
       // (deduced the same way as helpers)
       // > If there is no such action for some reason, then don't compile a
       // > method for this one.
-      let requestable = sails.getActions()[target.action];
+      const requestable = sails.getActions()[target.action];
       if (!requestable) {
         sails.log.warn('Skipping unrecognized action: `'+target.action+'`');
         continue;
       }
-      let def = requestable.toJSON && requestable.toJSON();
+      const def = requestable.toJSON && requestable.toJSON();
       if (def && def.fn) {
         if (def.args !== undefined) {
           endpointsByMethodName[methodName].args = def.args;
@@ -83,7 +86,7 @@ module.exports = {
       if (target.isSocket || target.hasSocketFeatures) {
         endpointsByMethodName[methodName].protocol = 'io.socket';
       }
-    }//∞
+    }// ∞
 
     // Smash and rewrite the `cloud.setup.js` file in the assets folder to
     // reflect the latest set of available cloud actions exposed by this Sails
@@ -111,24 +114,23 @@ Cloud.setup({
   /* eslint-enable */
 
 });`+
-      `\n`
+      `\n`,
     });
 
     // Also, if a `test/` folder exists, set up a barebones bounce of this data
     // as a JSON file inside of it, for testing purposes:
-    let hasTestFolder = await sails.helpers.fs.exists(path.resolve(sails.config.appPath, 'test/'));
+    const hasTestFolder = await sails.helpers.fs.exists(path.resolve(sails.config.appPath, 'test/'));
     if (hasTestFolder) {
       await sails.helpers.fs.write.with({
         destination: path.resolve(sails.config.appPath, 'test/private/CLOUD_SDK_METHODS.json'),
         string: JSON.stringify(_.extend(endpointsByMethodName, extraEndpointsOnlyForTestsByMethodName)),
-        force: true
+        force: true,
       });
     }
 
     sails.log.info('--');
     sails.log.info('Successfully rebuilt Cloud SDK for use in the browser.');
     sails.log.info('(and CLOUD_SDK_METHODS.json for use in automated tests)');
-
-  }
+  },
 
 };

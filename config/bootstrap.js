@@ -22,18 +22,18 @@ module.exports.bootstrap = async function() {
           sails.config.environment +
           '" Sails environment, to be precise), skipping the rest of the bootstrap to avoid data loss...',
       );
-      return;
     } // •
-
-    // running script to seeding
-    execSync('npm run seed');
   } else {
-    sails.log(
-      'Running bootstrap script because it was forced...  (either `--drop` or `--environment=test` was used)',
-    );
+    const isEnvAllowed =
+      process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'staging';
+    if (isEnvAllowed && sails.config.models.migrate === 'drop') {
+      sails.log(
+        'Running bootstrap script because it was forced...  (either `--drop` or `--environment=test` was used)',
+      );
 
-    // running script to seeding
-    // execSync('npm run undo');
-    // execSync('npm run seed');
+      // running script to seeding
+      execSync('npm run undo');
+      execSync('npm run seed');
+    }
   }
 };

@@ -1,20 +1,43 @@
+
 parasails.registerPage('welcome', {
   //  ╦╔╗╔╦╔╦╗╦╔═╗╦    ╔═╗╔╦╗╔═╗╔╦╗╔═╗
   //  ║║║║║ ║ ║╠═╣║    ╚═╗ ║ ╠═╣ ║ ║╣
   //  ╩╝╚╝╩ ╩ ╩╩ ╩╩═╝  ╚═╝ ╩ ╩ ╩ ╩ ╚═╝
   data: {
     modal: '',
-    pageLoadedAt: Date.now()
+    pageLoadedAt: Date.now(),
+    profile: {
+      user: {},
+      userCreatedAt: '',
+      userLoggedInTimes: '',
+      sessionIssuedAt: '',
+      sessionExpiredAt: '',
+    },
+    statistics: {
+      totalUsers: '',
+      activeUsersToday: '',
+      averageActiveUsersIn7days: '',
+    },
   },
 
   //  ╦  ╦╔═╗╔═╗╔═╗╦ ╦╔═╗╦  ╔═╗
   //  ║  ║╠╣ ║╣ ║  ╚╦╝║  ║  ║╣
   //  ╩═╝╩╚  ╚═╝╚═╝ ╩ ╚═╝╩═╝╚═╝
   beforeMount: function() {
-    //…
+    // …
   },
   mounted: async function() {
-    //…
+    // …
+
+    const getAccount = await Cloud.getAccount();
+    if (getAccount.success) {
+      this.profile = getAccount.data;
+    }
+
+    const getStatistics = await Cloud.getStatistics();
+    if (getStatistics.success) {
+      this.statistics = getStatistics.data;
+    }
   },
 
   //  ╦  ╦╦╦═╗╔╦╗╦ ╦╔═╗╦    ╔═╗╔═╗╔═╗╔═╗╔═╗
@@ -22,7 +45,7 @@ parasails.registerPage('welcome', {
   //   ╚╝ ╩╩╚═ ╩ ╚═╝╩ ╩╩═╝  ╩  ╩ ╩╚═╝╚═╝╚═╝
   // Configure deep-linking (aka client-side routing)
   virtualPagesRegExp: /^\/welcome\/?([^\/]+)?\/?/,
-  afterNavigate: async function(virtualPageSlug){
+  afterNavigate: async function(virtualPageSlug) {
     // `virtualPageSlug` is determined by the regular expression above, which
     // corresponds with `:unused?` in the server-side route for this page.
     switch (virtualPageSlug) {
@@ -55,5 +78,5 @@ parasails.registerPage('welcome', {
       // ```
     },
 
-  }
+  },
 });

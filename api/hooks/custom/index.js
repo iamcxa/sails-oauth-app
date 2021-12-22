@@ -1,29 +1,28 @@
+/* eslint-disable max-len */
+
 /**
  * @description :: The conventional "custom" hook.  Extends this app with custom server-start-time and request-time logic.
  * @docs        :: https://sailsjs.com/docs/concepts/extending-sails/hooks
  */
 
 module.exports = function defineCustomHook(sails) {
-
   return {
-
     /**
      * Runs when a Sails app loads/lifts.
      */
-    initialize: async function () {
-
+    initialize: async function() {
       sails.log.info('Initializing project hook... (`api/hooks/custom/`)');
 
-      let IMPORTANT_SENDGRID_CONFIG = ['sendgridSecret', 'internalEmailAddress'];
-      let isMissingSendgridConfig = _.difference(IMPORTANT_SENDGRID_CONFIG, Object.keys(sails.config.custom)).length > 0;
+      const IMPORTANT_SENDGRID_CONFIG = ['sendgridSecret', 'internalEmailAddress'];
+      const isMissingSendgridConfig =
+        _.difference(IMPORTANT_SENDGRID_CONFIG, Object.keys(sails.config.custom)).length >
+        0;
 
       if (isMissingSendgridConfig) {
-
-        let missingFeatureText = 'email';
+        const missingFeatureText = 'email';
         let suffix = '';
         if (_.contains(['silly'], sails.config.log.level)) {
-          suffix =
-`
+          suffix = `
 > Tip: To exclude sensitive credentials from source control, use:
 > • config/local.js (for local development)
 > • environment variables (for production)
@@ -37,7 +36,7 @@ module.exports = function defineCustomHook(sails) {
 `;
         }
 
-        let problems = [];
+        const problems = [];
         if (sails.config.custom.sendgridSecret === undefined) {
           problems.push('No `sails.config.custom.sendgridSecret` was configured.');
         }
@@ -46,7 +45,7 @@ module.exports = function defineCustomHook(sails) {
         }
 
         sails.log.verbose(
-`Some optional settings have not been configured yet:
+          `Some optional settings have not been configured yet:
 ---------------------------------------------------------------------
 ${problems.join('\n')}
 
@@ -54,29 +53,25 @@ Until this is addressed, this app's ${missingFeatureText} features
 will be disabled and/or hidden in the UI.
 
  [?] If you're unsure or need advice, come by https://sailsjs.com/support
----------------------------------------------------------------------${suffix}`);
-      }//ﬁ
+---------------------------------------------------------------------${suffix}`,
+        );
+      } // ﬁ
 
       // After "sails-hook-organics" finishes initializing, configure
       // Sendgrid packs with any available credentials.
-      sails.after('hook:organics:loaded', ()=>{
-
+      sails.after('hook:organics:loaded', () => {
         sails.helpers.sendgrid.configure({
           secret: sails.config.custom.sendgridSecret,
           from: sails.config.custom.fromEmailAddress,
           fromName: sails.config.custom.fromName,
         });
-
-      });//_∏_
+      }); // _∏_
 
       // ... Any other app-specific setup code that needs to run on lift,
       // even in production, goes here ...
-
     },
 
-
     routes: {
-
       /**
        * Runs before every matching route.
        *
@@ -87,19 +82,19 @@ will be disabled and/or hidden in the UI.
       before: {
         '/*': {
           skipAssets: true,
-          fn: async function(req, res, next){
-
-            let url = require('url');
+          fn: async function(req, res, next) {
+            const url = require('url');
 
             // First, if this is a GET request (and thus potentially a view),
             // attach a couple of guaranteed locals.
             if (req.method === 'GET') {
-
               // The  `_environment` local lets us do a little workaround to make Vue.js
               // run in "production mode" without unnecessarily involving complexities
               // with webpack et al.)
               if (res.locals._environment !== undefined) {
-                throw new Error('Cannot attach Sails environment as the view local `_environment`, because this view local already exists!  (Is it being attached somewhere else?)');
+                throw new Error(
+                  'Cannot attach Sails environment as the view local `_environment`, because this view local already exists!  (Is it being attached somewhere else?)',
+                );
               }
               res.locals._environment = sails.config.environment;
 
@@ -108,10 +103,12 @@ will be disabled and/or hidden in the UI.
               // > Note that, depending on the request, this may or may not be set to the
               // > logged-in user record further below.
               if (res.locals.me !== undefined) {
-                throw new Error('Cannot attach view local `me`, because this view local already exists!  (Is it being attached somewhere else?)');
+                throw new Error(
+                  'Cannot attach view local `me`, because this view local already exists!  (Is it being attached somewhere else?)',
+                );
               }
               res.locals.me = undefined;
-            }//ﬁ
+            } // ﬁ
 
             // Next, if we're running in our actual "production" or "staging" Sails
             // environment, check if this is a GET request via some other host,
@@ -128,29 +125,55 @@ will be disabled and/or hidden in the UI.
             let configuredBaseHostname;
             try {
               configuredBaseHostname = url.parse(sails.config.custom.baseUrl).host;
-            } catch (unusedErr) { /*…*/}
-            if ((sails.config.environment === 'staging' || sails.config.environment === 'production') && !req.isSocket && req.method === 'GET' && req.hostname !== configuredBaseHostname) {
-              sails.log.info('Redirecting GET request from `'+req.hostname+'` to configured expected host (`'+configuredBaseHostname+'`)...');
-              return res.redirect(sails.config.custom.baseUrl+req.url);
-            }//•
+            } catch (unusedErr) {
+              /* …*/
+            }
+            if (
+              (sails.config.environment === 'staging' ||
+                sails.config.environment === 'production') &&
+              !req.isSocket &&
+              req.method === 'GET' &&
+              req.hostname !== configuredBaseHostname
+            ) {
+              sails.log.info(
+                'Redirecting GET request from `' +
+                  req.hostname +
+                  '` to configured expected host (`' +
+                  configuredBaseHostname +
+                  '`)...',
+              );
+              return res.redirect(sails.config.custom.baseUrl + req.url);
+            } // •
 
             // No session? Proceed as usual.
             // (e.g. request for a static asset)
-            if (!req.session) { return next(); }
+            if (!req.session) {
+              return next();
+            }
 
             // Not logged in? Proceed as usual.
-            if (!req.session.userId) { return next(); }
+            if (!req.session.userId) {
+              return next();
+            }
 
             // Otherwise, look up the logged-in user.
-            let loggedInUser = await User.findOne({
-              id: req.session.userId
+            const {user: User, role: Role} = sails.models;
+            const loggedInUser = await User.findOne({
+              where: {id: req.session.userId},
+              include: [Role],
+              raw: true,
+              nest: true,
             });
 
             // If the logged-in user has gone missing, log a warning,
             // wipe the user id from the requesting user agent's session,
             // and then send the "unauthorized" response.
             if (!loggedInUser) {
-              sails.log.warn('Somehow, the user record for the logged-in user (`'+req.session.userId+'`) has gone missing....');
+              sails.log.warn(
+                'Somehow, the user record for the logged-in user (`' +
+                  req.session.userId +
+                  '`) has gone missing....',
+              );
               delete req.session.userId;
               return res.unauthorized();
             }
@@ -164,7 +187,9 @@ will be disabled and/or hidden in the UI.
             // Expose the user record as an extra property on the request object (`req.me`).
             // > Note that we make sure `req.me` doesn't already exist first.
             if (req.me !== undefined) {
-              throw new Error('Cannot attach logged-in user as `req.me` because this property already exists!  (Is it being attached somewhere else?)');
+              throw new Error(
+                'Cannot attach logged-in user as `req.me` because this property already exists!  (Is it being attached somewhere else?)',
+              );
             }
             req.me = loggedInUser;
 
@@ -172,49 +197,77 @@ will be disabled and/or hidden in the UI.
             // to the current timestamp.
             //
             // (Note: As an optimization, this is run behind the scenes to avoid adding needless latency.)
-            let MS_TO_BUFFER = 60*1000;
-            let now = Date.now();
+            const MS_TO_BUFFER = 60 * 1000;
+            const now = Date.now();
             if (loggedInUser.lastSeenAt < now - MS_TO_BUFFER) {
-              User.updateOne({id: loggedInUser.id})
-              .set({ lastSeenAt: now })
-              .exec((err)=>{
-                if (err) {
-                  sails.log.error('Background task failed: Could not update user (`'+loggedInUser.id+'`) with a new `lastSeenAt` timestamp.  Error details: '+err.stack);
-                  return;
-                }//•
-                sails.log.verbose('Updated the `lastSeenAt` timestamp for user `'+loggedInUser.id+'`.');
-                // Nothing else to do here.
-              });//_∏_  (Meanwhile...)
-            }//ﬁ
+              // User.updateOne({id: loggedInUser.id})
+              // .set({ lastSeenAt: now })
+              // .exec((err)=>{
+              //   if (err) {
+              //     sails.log.error('Background task failed: Could not update user (`'+loggedInUser.id+'`) with a new `lastSeenAt` timestamp.  Error details: '+err.stack);
+              //     return;
+              //   }//•
+              //   sails.log.verbose('Updated the `lastSeenAt` timestamp for user `'+loggedInUser.id+'`.');
+              //   // Nothing else to do here.
+              // });//_∏_  (Meanwhile...)
 
+              User.update(
+                {
+                  lastSeenAt: now,
+                },
+                {where: {id: loggedInUser.id}},
+              )
+                .then((res) => {
+                  sails.log.verbose(
+                    'Updated the `lastSeenAt` timestamp for user `' +
+                      loggedInUser.id +
+                      '`.',
+                  );
+                  // Nothing else to do here.
+                  return res;
+                })
+                .catch((err) => {
+                  sails.log.error(
+                    'Background task failed: Could not update user (`' +
+                      loggedInUser.id +
+                      '`) with a new `lastSeenAt` timestamp.  Error details: ' +
+                      err.stack,
+                  );
+                  return err;
+                }); // _∏_  (Meanwhile...)
+            } // ﬁ
 
             // If this is a GET request, then also expose an extra view local (`<%= me %>`).
             // > Note that we make sure a local named `me` doesn't already exist first.
             // > Also note that we strip off any properties that correspond with protected attributes.
             if (req.method === 'GET') {
               if (res.locals.me !== undefined) {
-                throw new Error('Cannot attach logged-in user as the view local `me`, because this view local already exists!  (Is it being attached somewhere else?)');
+                throw new Error(
+                  'Cannot attach logged-in user as the view local `me`, because this view local already exists!  (Is it being attached somewhere else?)',
+                );
               }
 
               // Exclude any fields corresponding with attributes that have `protect: true`.
-              let sanitizedUser = _.extend({}, loggedInUser);
+              const sanitizedUser = _.extend({}, loggedInUser);
               sails.helpers.redactUser(sanitizedUser);
 
               // If there is still a "password" in sanitized user data, then delete it just to be safe.
               // (But also log a warning so this isn't hopelessly confusing.)
               if (sanitizedUser.password) {
-                sails.log.warn('The logged in user record has a `password` property, but it was still there after pruning off all properties that match `protect: true` attributes in the User model.  So, just to be safe, removing the `password` property anyway...');
+                sails.log.warn(
+                  'The logged in user record has a `password` property, but it was still there after pruning off all properties that match `protect: true` attributes in the User model.  So, just to be safe, removing the `password` property anyway...',
+                );
                 delete sanitizedUser.password;
-              }//ﬁ
+              } // ﬁ
 
               res.locals.me = sanitizedUser;
 
               // Include information on the locals as to whether billing features
               // are enabled for this app, and whether email verification is required.
               res.locals.isBillingEnabled = sails.config.custom.enableBillingFeatures;
-              res.locals.isEmailVerificationRequired = sails.config.custom.verifyEmailAddresses;
-
-            }//ﬁ
+              res.locals.isEmailVerificationRequired =
+                sails.config.custom.verifyEmailAddresses;
+            } // ﬁ
 
             // Prevent the browser from caching logged-in users' pages.
             // (including w/ the Chrome back button)
@@ -223,8 +276,8 @@ will be disabled and/or hidden in the UI.
             res.setHeader('Cache-Control', 'no-cache, no-store');
 
             return next();
-          }
-        }
+          },
+        },
       },
 
       after: {
@@ -234,10 +287,6 @@ will be disabled and/or hidden in the UI.
           return next();
         },
       },
-
-    }
-
-
+    },
   };
-
 };

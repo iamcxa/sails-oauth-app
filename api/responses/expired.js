@@ -21,30 +21,16 @@
  *     }
  * ```
  */
-module.exports = function expired(data, options) {
-  // let req = this.req;
-  // let res = this.res;
-  //
-  // sails.log.verbose('Ran custom response: res.expired()');
-  //
-  // if (req.wantsJSON) {
-  //   return res.status(498).send('Token Expired/Invalid');
-  // } else {
-  //   return res.status(498).view('498');
-  // }
-
+module.exports = async function expired(
+  data = 'response.expired.token_expired_or_invalid',
+  options,
+) {
   return sails.helpers.sendResponse.with({
     data,
     options,
     env: this,
     statusCode: 498,
-    callback: (req, res, payload) => {
-      if (req.session.userId) {
-        delete req.session.userId;
-      }
-      req.session.authenticated = false;
-      req.session.destroy();
-      req.logout && req.logout();
+    callback: async (req, res, payload) => {
       return payload;
     },
   });

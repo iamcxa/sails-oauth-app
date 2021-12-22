@@ -5,23 +5,32 @@ module.exports = {
   /**
    * Sign provided payload and transform into string token.
    *
-   *     @param {Object} payload
-   *     @param {Object} options
+   *     @param {String} id
+   *     @param {Number} expiresIn
+   *     @param {String} strategy
    *     @param {Function} [callback]
    *
    *     @return {String} token
    */
-  sign: async function(payload, options = {}, callback) {
-    // FIXME: add JWT expiresIn https://github.com/auth0/node-jsonwebtoken
-    return jwt.sign(
-      payload,
+  sign: async function(id, expiresIn = 0, strategy = 'local', callback) {
+    const expiredAt = Date.now() + expiresIn;
+    const token = jwt.sign(
+      {
+        id,
+        str: strategy,
+        // exp,
+      },
       jwtSecret,
       {
-        expiresIn: _.get(sails.config, 'session.cookie.maxAge', '24h'),
-        ...options,
+        expiresIn: `${expiresIn}ms`,
       },
       callback,
     );
+    return {
+      token,
+      expiresIn,
+      expiredAt,
+    };
   },
 
   /**

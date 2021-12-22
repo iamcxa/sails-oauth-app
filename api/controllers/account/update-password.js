@@ -1,36 +1,34 @@
 module.exports = {
+  /**
+   * @swagger
+   *
+   * /update-password:
+   *   security:
+   *     - bearer: []
+   *   tags:
+   *     - Account
+   */
 
-
-  friendlyName: 'Update password',
-
+  friendlyName: 'Account',
 
   description: 'Update the password for the logged-in user.',
 
-
   inputs: {
-
     password: {
       description: 'The new, unencrypted password.',
       example: 'abc123v2',
-      required: true
-    }
-
+      required: true,
+    },
   },
 
-
-  fn: async function ({password}) {
-
-    // Hash the new password.
-    let hashed = await sails.helpers.passwords.hashPassword(password);
-
+  fn: async function({password}) {
     // Update the record for the logged-in user.
-    await User.updateOne({ id: this.req.me.id })
-      .set({
-        password: hashed,
-        oauthSkipPassword: false,
-      });
+    const user = await sails.services.user.get({id: this.req.me.id});
+    user.password = password;
+    user.oauthSkipPassword = false;
 
-  }
+    this.req.me = await user.save();
 
-
+    return this.res.ok(`response.success.update-password`);
+  },
 };

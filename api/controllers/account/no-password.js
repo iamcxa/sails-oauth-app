@@ -1,28 +1,28 @@
 module.exports = {
+  /**
+   * @swagger
+   *
+   * /no-password:
+   *   security:
+   *     - bearer: []
+   *   tags:
+   *     - Account
+   */
 
-
-  friendlyName: 'Update password',
-
+  friendlyName: 'Account',
 
   description: 'Update the password for the logged-in user.',
 
-
-  inputs: {
-
-  },
-
-
-  fn: async function ({}) {
-
+  fn: async function() {
     // Update the record for the logged-in user.
-    await User.updateOne({ id: this.req.me.id })
-      .set({
-        password: ' ',
+    await User.update(
+      {
+        password: null,
         oauthSkipPassword: true,
-      });
+      },
+      {where: {id: this.req.user.id}},
+    );
 
     return this.res.ok();
-  }
-
-
+  },
 };

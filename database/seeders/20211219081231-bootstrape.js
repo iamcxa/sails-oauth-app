@@ -35,8 +35,6 @@ module.exports = {
           emailAddress: 'admin@example.com',
           fullName: 'Ryan Dahl',
           password: 'abc123',
-
-          isSuperAdmin: true,
           role: 'super-admin',
         },
       ]);

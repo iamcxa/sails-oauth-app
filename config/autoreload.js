@@ -1,5 +1,6 @@
 module.exports.autoreload = {
-  active: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev',
+  active: false, // process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'dev',
+  overrideMigrateSetting: false,
   usePolling: false,
   dirs: [
     'api/models',

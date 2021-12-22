@@ -391,7 +391,6 @@ parasails.registerComponent('ajaxForm', {
         });
       }
 
-
       // When a cloud error occurs, tolerate it, but set the userland "cloudError"
       // prop accordingly.
       if (failedWithCloudExit) {

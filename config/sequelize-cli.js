@@ -53,6 +53,7 @@ const defaultConfig = {
 };
 
 module.exports = {
+  dev: defaultConfig,
   development: defaultConfig,
   // production: Object.assign(defaultConfig, {database: 'db-prod'}),
 };

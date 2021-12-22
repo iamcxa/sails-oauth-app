@@ -34,6 +34,7 @@
     // If "no-undef" is enabled below, be sure to list all global variables that
     // are used in this app's backend code (including the globalIds of models):
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    "Sequelize": true,
     "Promise": true,
     "sails": true,
     "_": true,
@@ -45,6 +46,8 @@
     // …and any others.
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   },
+
+  "extends": ["eslint:recommended", "google"],
 
   "rules": {
     "block-scoped-var":             ["error"],
@@ -86,7 +89,14 @@
     "semi":                         ["warn", "always"],
     "semi-spacing":                 ["warn", {"before":false, "after":true}],
     "semi-style":                   ["warn", "last"],
-    "no-var":                       ["warn"]
+    "no-var":                       ["warn"],
+    "new-cap":                      ["off"],
+    "max-len": ["warn", {
+      "code": 140,
+      "tabWidth": 2,
+      "ignoreUrls": true,
+      "ignorePattern": "goog.(module|require)"
+    }]
   }
 
 }

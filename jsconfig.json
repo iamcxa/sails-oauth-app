@@ -13,6 +13,7 @@
       "@traits": ["./api/traits/*"],
       "@presenters": ["./api/presenters/*"],
       "@samples": ["./api/samples/*"],
+      "@emails": ["./api/emails/*"],
       "@factories": ["./database/factories/*"]
     }
   }
