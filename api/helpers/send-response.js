@@ -167,7 +167,7 @@ module.exports = {
     }
 
     // If provide a redirect param, do it by the provided value type.
-    if (!req.user && (options.redirect || !req.url.includes('/api'))) {
+    if (!req.user && options.redirect && !req.url.includes('/api')) {
       return res.redirect(options.redirect || sails.config.paths.login);
     }
 

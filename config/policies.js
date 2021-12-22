@@ -15,7 +15,6 @@ module.exports.policies = {
 
   // Bypass the `is-authenticated` policy for:
   'entrance/*': true,
-  'account/logout': true,
   'view-homepage-or-redirect': 'passport',
   'view-faq': true,
   'view-contact': true,
@@ -26,6 +25,7 @@ module.exports.policies = {
   'dashboard/view/*': ['passport', 'is-authenticated'],
   'account/view/*': ['passport', 'is-authenticated'],
 
+  'account/logout': ['passport'],
   'entrance/confirm-email': ['passport'],
   'entrance/update-password-and-login': ['passport'],
   'entrance/login': ['passport'],

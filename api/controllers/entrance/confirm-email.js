@@ -55,6 +55,7 @@ then redirect to either a special landing page (for newly-signed up users), or t
   },
 
   fn: async function({token}, exits) {
+    const {res, req} = this;
     // If no token was provided, this is automatically invalid.
     if (!token) {
       throw 'invalidOrExpiredToken';
@@ -92,7 +93,12 @@ then redirect to either a special landing page (for newly-signed up users), or t
       if (this.req.wantsJSON) {
         return;
       }
-      throw {redirect: sails.config.paths.emailConfirmation};
+
+      return req.logIn(user, (err) =>
+        res.loggedIn(err, user, null, null, () => {
+          return res.redirect(sails.config.paths.emailConfirmation);
+        }),
+      );
     } else if (user.emailStatus === 'change-requested') {
       //  ┌─┐┌─┐┌┐┌┌─┐┬┬─┐┌┬┐┬┌┐┌┌─┐  ╔═╗╦ ╦╔═╗╔╗╔╔═╗╔═╗╔╦╗  ┌─┐┌┬┐┌─┐┬┬
       //  │  │ ││││├┤ │├┬┘││││││││ ┬  ║  ╠═╣╠═╣║║║║ ╦║╣  ║║  ├┤ │││├─┤││

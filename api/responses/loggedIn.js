@@ -58,17 +58,17 @@ module.exports = async function loggedIn(
     await sails.helpers.broadcastSessionChange(req);
   }
 
+  // if pass a process function
+  if (next) {
+    return next();
+  }
+
   // if request is not by API...
   if (!req.wantsJSON && strategy !== 'local') {
     if ((!user.password || !user.password.trim()) && !user.oauthSkipPassword) {
       return res.redirect(sails.config.paths.oauthSetPassword);
     }
     return res.redirect(sails.config.custom.redirectPathAfterOAuth);
-  }
-
-  // if pass a process function
-  if (next) {
-    return next();
   }
 
   return sails.helpers.sendResponse.with({

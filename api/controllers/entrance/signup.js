@@ -71,7 +71,7 @@ the account verification message.)`,
     const newUserRecord = await sails.services.user.signup({
       fullName,
       emailAddress: newEmailAddress,
-      password: await sails.helpers.passwords.hashPassword(password),
+      password,
       tosAcceptedByIp: this.req.ip,
     });
 
